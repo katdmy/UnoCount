@@ -1,23 +1,34 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:orientation="horizontal"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content">
+    android:layout_height="wrap_content"
+    android:layout_margin="8dp">
 
     <Switch
         android:id="@+id/activeSwitch"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+        android:layout_height="wrap_content"
+        android:layout_centerVertical="true"
+        android:layout_alignParentLeft="true" />
 
     <TextView
         android:id="@+id/nameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1" />
+        android:layout_weight="1"
+        android:layout_margin="8dp"
+        android:layout_centerVertical="true"
+        android:layout_toRightOf="@id/activeSwitch"
+        android:layout_toLeftOf="@id/deleteButton"
+        android:fontFamily="sans-serif-medium"
+        android:textSize="20dp" />
 
     <Button
-        android:id="@+id/deleteButon"
-        android:layout_width="20dp"
-        android:layout_height="20dp"
-        android:background="@drawable/ic_clear" />
-</LinearLayout>
+        android:id="@+id/deleteButton"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:background="@drawable/ic_delete" />
+</RelativeLayout>

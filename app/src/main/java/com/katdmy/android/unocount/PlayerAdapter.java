@@ -44,7 +44,11 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
             holder.activeSwitch.setChecked(player.getActive());
             holder.nameTextView.setText(player.getName());
         }
+    }
 
+    void setPlayers(List<Player> players) {
+        mPlayers = players;
+        notifyDataSetChanged();
     }
 
     @Override

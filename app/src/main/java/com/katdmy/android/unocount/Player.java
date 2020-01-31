@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey;
 
 @Entity
 public class Player {
-    @PrimaryKey
+    @PrimaryKey(autoGenerate = true)
     @NonNull
     private int mCode;
 
@@ -14,8 +14,8 @@ public class Player {
 
     private boolean mActive;
 
-    public Player(int code, String name) {
-        mCode = code;
+    public Player(String name) {
+        mCode = 0;
         mName = name;
         mActive = true;
     }
@@ -30,5 +30,13 @@ public class Player {
 
     public boolean getActive() {
         return mActive;
+    }
+
+    public void setCode(int code) {
+        mCode = code;
+    }
+
+    public void setActive(boolean active) {
+        mActive = active;
     }
 }
