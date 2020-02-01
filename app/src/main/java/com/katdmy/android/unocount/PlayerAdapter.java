@@ -4,6 +4,9 @@ import android.content.Context;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
+import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
@@ -13,19 +16,51 @@ import java.util.List;
 
 public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerViewHolder> {
 
-    class PlayerViewHolder extends RecyclerView.ViewHolder {
+    private final LayoutInflater mInflater;
+    private List<Player> mPlayers;
+    private OnItemClickListener mListener;
+
+    public interface OnItemClickListener {
+        void onActiveClick(int code, boolean active);
+
+        void onDeleteClick(Player player);
+    }
+
+    public void setOnItemClickListener(OnItemClickListener listener) {
+        mListener = listener;
+    }
+
+    public static class PlayerViewHolder extends RecyclerView.ViewHolder {
         private final Switch activeSwitch;
         private final TextView nameTextView;
+        private final ImageView deleteImage;
 
-        private PlayerViewHolder(View itemView) {
+        private PlayerViewHolder(View itemView, final OnItemClickListener listener, List<Player> players) {
             super(itemView);
             activeSwitch = itemView.findViewById(R.id.activeSwitch);
             nameTextView = itemView.findViewById(R.id.nameTextView);
+            deleteImage = itemView.findViewById(R.id.deleteImage);
+
+            activeSwitch.setOnClickListener(v -> {
+                if (listener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION) {
+                        Player player = players.get(position);
+                        listener.onActiveClick(player.getCode(), player.getActive());
+                    }
+                }
+            });
+
+            deleteImage.setOnClickListener(v -> {
+                if (listener != null) {
+                    int position = getAdapterPosition();
+                    if (position != RecyclerView.NO_POSITION)
+                        listener.onDeleteClick(players.get(position));
+                }
+            });
         }
     }
 
-    private final LayoutInflater mInflater;
-    private List<Player> mPlayers;
 
     public PlayerAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
@@ -34,7 +69,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
     @Override
     public PlayerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = mInflater.inflate(R.layout.player_item, parent, false);
-        return new PlayerViewHolder(itemView);
+        return new PlayerViewHolder(itemView, mListener, mPlayers);
     }
 
     @Override
