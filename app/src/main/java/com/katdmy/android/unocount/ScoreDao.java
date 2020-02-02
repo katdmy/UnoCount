@@ -31,4 +31,7 @@ interface ScoreDao {
             "SUM(player5) AS player5 " +
             "FROM score")
     LiveData<Score> getTotal();
+
+    @Query("SELECT mName FROM player WHERE mActive = 1 ORDER BY mCode")
+    LiveData<List<String>> getActivePlayers();
 }

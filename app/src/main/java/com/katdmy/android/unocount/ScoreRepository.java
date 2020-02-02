@@ -11,12 +11,14 @@ public class ScoreRepository {
     private ScoreDao mScoreDao;
     private LiveData<List<Score>> mScore;
     private LiveData<Score> mTotal;
+    private LiveData<List<String>> mActivePlayers;
 
     ScoreRepository(Application application) {
         ScoreDatabase db = ScoreDatabase.getDatabase(application);
         mScoreDao = db.scoreDao();
         mScore = mScoreDao.getAll();
         mTotal = mScoreDao.getTotal();
+        mActivePlayers = mScoreDao.getActivePlayers();
     }
 
     LiveData<List<Score>> getScore() {
@@ -27,6 +29,10 @@ public class ScoreRepository {
         return mTotal;
     }
 
+    void deleteAll() {
+        mScoreDao.deleteAll();
+    }
+
     void insert(final Score score) {
         ScoreDatabase.databaseWriteExecutor.execute(() ->
                 mScoreDao.insertRound(score.getPlayer1(),
@@ -35,5 +41,9 @@ public class ScoreRepository {
                         score.getPlayer4(),
                         score.getPlayer5())
         );
+    }
+
+    public LiveData<List<String>> getActivePlayers() {
+        return mActivePlayers;
     }
 }

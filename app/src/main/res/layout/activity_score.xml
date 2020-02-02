@@ -7,7 +7,7 @@
 
     <LinearLayout
         android:id="@+id/headerLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="80dp"
         android:orientation="horizontal"
         app:layout_constraintTop_toTopOf="parent"
@@ -65,7 +65,7 @@
 
     <LinearLayout
         android:id="@+id/totalLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintBottom_toBottomOf="parent"
@@ -124,7 +124,7 @@
 
     <LinearLayout
         android:id="@+id/newRoundLayout"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal"
         app:layout_constraintBottom_toTopOf="@id/totalLayout"
@@ -188,7 +188,7 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/recyclerview"
-        android:layout_width="0dp"
+        android:layout_width="match_parent"
         android:layout_height="0dp"
         app:layout_constraintBottom_toTopOf="@id/newRoundLayout"
         app:layout_constraintLeft_toLeftOf="parent"

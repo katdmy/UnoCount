@@ -5,30 +5,54 @@ import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
+import android.graphics.Typeface;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
+
+import java.util.ArrayList;
+import java.util.List;
 
 public class ScoreActivity extends AppCompatActivity {
 
     private ScoreViewModel mScoreViewModel;
+    private ScoreAdapter mScoreAdapter;
+    private List<String> mActivePlayers;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
 
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        final ScoreAdapter adapter = new ScoreAdapter(this);
-        recyclerView.setAdapter(adapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         mScoreViewModel = new ViewModelProvider(this).get(ScoreViewModel.class);
 
-        mScoreViewModel.getScore().observe(this, score -> adapter.setScore(score));
+        mScoreViewModel.getScore().observe(this, score -> mScoreAdapter.setScore(score));
+
+        boolean newGame = false;
+        Bundle extras = getIntent().getExtras();
+        if (extras != null) {
+            newGame = extras.getBoolean("newGame");
+        }
+
+        if (newGame) {
+            clearData();
+            mScoreViewModel.getActivePlayers().observe(this, (players) -> {
+                if (players.size() > 0) {
+                    for (int i = 0; i < players.size(); i++)
+                        addPlayerHeaderView(i, players.get(i));
+                }
+            });
+
+        }
+
+        setRecyclerView();
+        setButtons();
 
         TextView total1TextView = findViewById(R.id.total1TextView);
         TextView total2TextView = findViewById(R.id.total2TextView);
@@ -43,7 +67,16 @@ public class ScoreActivity extends AppCompatActivity {
             total4TextView.setText(String.valueOf(total.getPlayer4()));
             total5TextView.setText(String.valueOf(total.getPlayer5()));
         });
+    }
 
+    void setRecyclerView() {
+        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        mScoreAdapter = new ScoreAdapter(this);
+        recyclerView.setAdapter(mScoreAdapter);
+        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+    }
+
+    void setButtons() {
         EditText new1EditText = findViewById(R.id.new1EditText);
         EditText new2EditText = findViewById(R.id.new2EditText);
         EditText new3EditText = findViewById(R.id.new3EditText);
@@ -74,5 +107,31 @@ public class ScoreActivity extends AppCompatActivity {
                 Toast.makeText(getApplicationContext(), "Заполните счёт всех игроков!", Toast.LENGTH_LONG).show();
             }
         });
+    }
+
+    public void clearData() {
+        AsyncTask.execute(() -> mScoreViewModel.deleteAll());
+        LinearLayout parent = findViewById(R.id.headerLayout);
+        for (int i = 0; i < parent.getChildCount(); i++) {
+            TextView childView = (TextView) parent.getChildAt(i);
+            parent.removeView(childView);
+        }
+
+    }
+
+    public void addPlayerHeaderView(int i, String name) {
+        LinearLayout parent = findViewById(R.id.headerLayout);
+
+        VerticalTextView playerTextView = new VerticalTextView(this, null);
+        playerTextView.setVerticalText(name);
+        playerTextView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+        parent.addView(playerTextView);
+
+        LinearLayout.LayoutParams loParams = (LinearLayout.LayoutParams) playerTextView.getLayoutParams();
+        loParams.width = 0;
+        loParams.weight = 3f;
+        loParams.height = parent.getHeight();
+        playerTextView.setLayoutParams(loParams);
+
     }
 }

@@ -27,22 +27,23 @@ public abstract class ScoreDatabase extends RoomDatabase {
             synchronized (ScoreDatabase.class) {
                 if (INSTANCE == null) {
                     INSTANCE = Room.databaseBuilder(context, ScoreDatabase.class, "score_db")
-                            .addCallback(mScoreDatabaseCallback).build();
+//                            .addCallback(mScoreDatabaseCallback)
+                            .build();
                 }
             }
         }
         return INSTANCE;
     }
 
-    static ScoreDatabase.Callback mScoreDatabaseCallback = new ScoreDatabase.Callback() {
-        @Override
-        public void onOpen(@NonNull SupportSQLiteDatabase db) {
-            super.onOpen(db);
-
-            databaseWriteExecutor.execute(() -> {
-                ScoreDao dao = INSTANCE.scoreDao();
-                dao.deleteAll();
-            });
-        }
-    };
+//    static ScoreDatabase.Callback mScoreDatabaseCallback = new ScoreDatabase.Callback() {
+//        @Override
+//        public void onOpen(@NonNull SupportSQLiteDatabase db) {
+//            super.onOpen(db);
+//
+//            databaseWriteExecutor.execute(() -> {
+//                ScoreDao dao = INSTANCE.scoreDao();
+//                dao.deleteAll();
+//            });
+//        }
+//    };
 }
