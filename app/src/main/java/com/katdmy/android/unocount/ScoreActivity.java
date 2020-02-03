@@ -8,7 +8,9 @@ import androidx.recyclerview.widget.RecyclerView;
 import android.graphics.Typeface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -24,6 +26,8 @@ public class ScoreActivity extends AppCompatActivity {
     private ScoreViewModel mScoreViewModel;
     private ScoreAdapter mScoreAdapter;
     private List<String> mActivePlayers;
+    private int playersCount;
+    private String LOG_TAG = ScoreActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,40 +47,44 @@ public class ScoreActivity extends AppCompatActivity {
         if (newGame) {
             clearData();
             mScoreViewModel.getActivePlayers().observe(this, (players) -> {
-                if (players.size() > 0) {
-                    for (int i = 0; i < players.size(); i++)
-                        addPlayerHeaderView(i, players.get(i));
-                }
+                if (players.size() > 0)
+                    createViews(players);
             });
-
         }
 
         setRecyclerView();
         setButtons();
 
-        TextView total1TextView = findViewById(R.id.total1TextView);
-        TextView total2TextView = findViewById(R.id.total2TextView);
-        TextView total3TextView = findViewById(R.id.total3TextView);
-        TextView total4TextView = findViewById(R.id.total4TextView);
-        TextView total5TextView = findViewById(R.id.total5TextView);
+//        TextView total1TextView = findViewById(R.id.total1TextView);
+//        TextView total2TextView = findViewById(R.id.total2TextView);
+//        TextView total3TextView = findViewById(R.id.total3TextView);
+//        TextView total4TextView = findViewById(R.id.total4TextView);
+//        TextView total5TextView = findViewById(R.id.total5TextView);
 
         mScoreViewModel.getTotal().observe(this, (total) -> {
-            total1TextView.setText(String.valueOf(total.getPlayer1()));
-            total2TextView.setText(String.valueOf(total.getPlayer2()));
-            total3TextView.setText(String.valueOf(total.getPlayer3()));
-            total4TextView.setText(String.valueOf(total.getPlayer4()));
-            total5TextView.setText(String.valueOf(total.getPlayer5()));
+//            total1TextView.setText(String.valueOf(total.getPlayer1()));
+//            total2TextView.setText(String.valueOf(total.getPlayer2()));
+//            total3TextView.setText(String.valueOf(total.getPlayer3()));
+//            total4TextView.setText(String.valueOf(total.getPlayer4()));
+//            total5TextView.setText(String.valueOf(total.getPlayer5()));
+
+            for (int i = 1; i < playersCount; i++) {
+                LinearLayout totalParent = findViewById(R.id.totalLayout);
+                TextView totalTextView = totalParent.findViewWithTag("total" + i);
+//                totalTextView.setText(total.getPlayer1());
+            }
+
         });
     }
 
-    void setRecyclerView() {
+    private void setRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
         mScoreAdapter = new ScoreAdapter(this);
         recyclerView.setAdapter(mScoreAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
 
-    void setButtons() {
+    private void setButtons() {
         EditText new1EditText = findViewById(R.id.new1EditText);
         EditText new2EditText = findViewById(R.id.new2EditText);
         EditText new3EditText = findViewById(R.id.new3EditText);
@@ -109,29 +117,66 @@ public class ScoreActivity extends AppCompatActivity {
         });
     }
 
-    public void clearData() {
+    private void clearData() {
         AsyncTask.execute(() -> mScoreViewModel.deleteAll());
-        LinearLayout parent = findViewById(R.id.headerLayout);
-        for (int i = 0; i < parent.getChildCount(); i++) {
-            TextView childView = (TextView) parent.getChildAt(i);
-            parent.removeView(childView);
-        }
 
+        LinearLayout headerParent = findViewById(R.id.headerLayout);
+        Log.e(LOG_TAG, "Children elements: " + headerParent.getChildCount());
+        int count = headerParent.getChildCount();
+        for (int i = 1; i < count; i++) {
+            TextView childView = (TextView) headerParent.getChildAt(1);
+            Log.e(LOG_TAG, "i=" + i + ", deleting " + childView.getText().toString());
+            headerParent.removeView(childView);
+        }
     }
 
-    public void addPlayerHeaderView(int i, String name) {
-        LinearLayout parent = findViewById(R.id.headerLayout);
+    private void createViews(List<String> players) {
+        playersCount = players.size();
 
-        VerticalTextView playerTextView = new VerticalTextView(this, null);
-        playerTextView.setVerticalText(name);
-        playerTextView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
-        parent.addView(playerTextView);
+        LinearLayout headerParent = findViewById(R.id.headerLayout);
+        for (int i = 0; i < players.size(); i++) {
+            String name = players.get(i);
+            VerticalTextView playerTextView = new VerticalTextView(this, null);
+            playerTextView.setVerticalText(name);
+            playerTextView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+            headerParent.addView(playerTextView);
 
-        LinearLayout.LayoutParams loParams = (LinearLayout.LayoutParams) playerTextView.getLayoutParams();
-        loParams.width = 0;
-        loParams.weight = 3f;
-        loParams.height = parent.getHeight();
-        playerTextView.setLayoutParams(loParams);
+            LinearLayout.LayoutParams loParams = (LinearLayout.LayoutParams) playerTextView.getLayoutParams();
+            loParams.width = 0;
+            loParams.weight = 3f;
+            loParams.height = headerParent.getHeight();
+            playerTextView.setLayoutParams(loParams);
+        }
 
+        LinearLayout totalParent = findViewById(R.id.totalLayout);
+        for (int i = 0; i < players.size(); i++) {
+            TextView totalTextView = new TextView(this);
+            totalTextView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+            totalTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            totalTextView.setTag("total" + i);
+            totalParent.addView(totalTextView);
+
+            LinearLayout.LayoutParams loParams = (LinearLayout.LayoutParams) totalTextView.getLayoutParams();
+            loParams.width = 0;
+            loParams.weight = 3f;
+            loParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            totalTextView.setLayoutParams(loParams);
+        }
+
+        LinearLayout newRoundParent = findViewById(R.id.newRoundLayout);
+        for (int i = 0; i < players.size(); i++) {
+            EditText newRoundEditText = new EditText(this);
+            newRoundEditText.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
+            newRoundEditText.setInputType(InputType.TYPE_CLASS_NUMBER);
+            newRoundEditText.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
+            newRoundEditText.setTag("newRound" + i);
+            newRoundParent.addView(newRoundEditText);
+
+            LinearLayout.LayoutParams loParams = (LinearLayout.LayoutParams) newRoundEditText.getLayoutParams();
+            loParams.width = 0;
+            loParams.weight = 3f;
+            loParams.height = LinearLayout.LayoutParams.WRAP_CONTENT;
+            newRoundEditText.setLayoutParams(loParams);
+        }
     }
 }

@@ -44,7 +44,7 @@ public class VerticalTextView extends AppCompatTextView {
         int x = getWidth() / 2;
         int y = getHeight() / 2;
 
-        Log.e(LOG_TAG, "Text: " + mText + ", width: " + getWidth() + ", height: " + getHeight() + ", x: " + x + ", y: " + y);
+        //Log.e(LOG_TAG, "Text: " + mText + ", width: " + getWidth() + ", height: " + getHeight() + ", x: " + x + ", y: " + y);
 
         canvas.rotate(-90, x, y);
         canvas.drawText(mText, x, y, textPaint);

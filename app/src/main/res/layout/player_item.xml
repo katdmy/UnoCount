@@ -12,6 +12,13 @@
         android:layout_centerVertical="true"
         android:layout_alignParentLeft="true" />
 
+    <ImageView
+        android:id="@+id/deleteImage"
+        android:layout_width="35dp"
+        android:layout_height="35dp"
+        android:layout_centerVertical="true"
+        android:layout_alignParentRight="true"
+        android:src="@drawable/ic_delete" />
     <TextView
         android:id="@+id/nameTextView"
         android:layout_width="0dp"
@@ -24,11 +31,4 @@
         android:fontFamily="sans-serif-medium"
         android:textSize="20dp" />
 
-    <ImageView
-        android:id="@+id/deleteImage"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
-        android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
-        android:src="@drawable/ic_delete" />
 </RelativeLayout>
