@@ -13,24 +13,17 @@ public class ScoreViewModel extends AndroidViewModel {
 
     private LiveData<List<Score>> mScore;
 
-    private LiveData<Score> mTotal;
-
     private LiveData<List<String>> mActivePlayers;
 
     public ScoreViewModel(Application application) {
         super(application);
         mRepository = new ScoreRepository(application);
         mScore = mRepository.getScore();
-        mTotal = mRepository.getTotal();
         mActivePlayers = mRepository.getActivePlayers();
     }
 
     LiveData<List<Score>> getScore() {
         return mScore;
-    }
-
-    LiveData<Score> getTotal() {
-        return mTotal;
     }
 
     void deleteAll() {

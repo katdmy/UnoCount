@@ -61,20 +61,20 @@ public class ScoreActivity extends AppCompatActivity {
 //        TextView total4TextView = findViewById(R.id.total4TextView);
 //        TextView total5TextView = findViewById(R.id.total5TextView);
 
-        mScoreViewModel.getTotal().observe(this, (total) -> {
+//        mScoreViewModel.getTotal().observe(this, (total) -> {
 //            total1TextView.setText(String.valueOf(total.getPlayer1()));
 //            total2TextView.setText(String.valueOf(total.getPlayer2()));
 //            total3TextView.setText(String.valueOf(total.getPlayer3()));
 //            total4TextView.setText(String.valueOf(total.getPlayer4()));
 //            total5TextView.setText(String.valueOf(total.getPlayer5()));
 
-            for (int i = 1; i < playersCount; i++) {
-                LinearLayout totalParent = findViewById(R.id.totalLayout);
-                TextView totalTextView = totalParent.findViewWithTag("total" + i);
+//            for (int i = 1; i < playersCount; i++) {
+//                LinearLayout totalParent = findViewById(R.id.totalLayout);
+//                TextView totalTextView = totalParent.findViewWithTag("total" + i);
 //                totalTextView.setText(total.getPlayer1());
-            }
+//            }
 
-        });
+//        });
     }
 
     private void setRecyclerView() {
@@ -85,35 +85,52 @@ public class ScoreActivity extends AppCompatActivity {
     }
 
     private void setButtons() {
-        EditText new1EditText = findViewById(R.id.new1EditText);
-        EditText new2EditText = findViewById(R.id.new2EditText);
-        EditText new3EditText = findViewById(R.id.new3EditText);
-        EditText new4EditText = findViewById(R.id.new4EditText);
-        EditText new5EditText = findViewById(R.id.new5EditText);
+//        EditText new1EditText = findViewById(R.id.new1EditText);
+//        EditText new2EditText = findViewById(R.id.new2EditText);
+//        EditText new3EditText = findViewById(R.id.new3EditText);
+//        EditText new4EditText = findViewById(R.id.new4EditText);
+//        EditText new5EditText = findViewById(R.id.new5EditText);
+//        Button newRoundButton = findViewById(R.id.newRoundButton);
+//        newRoundButton.setOnClickListener((view) -> {
+//            if (!TextUtils.isEmpty(new1EditText.getText()) &&
+//                    !TextUtils.isEmpty(new2EditText.getText()) &&
+//                    !TextUtils.isEmpty(new3EditText.getText()) &&
+//                    !TextUtils.isEmpty(new4EditText.getText()) &&
+//                    !TextUtils.isEmpty(new5EditText.getText())) {
+//                int new1 = Integer.parseInt(new1EditText.getText().toString());
+//                int new2 = Integer.parseInt(new2EditText.getText().toString());
+//                int new3 = Integer.parseInt(new3EditText.getText().toString());
+//                int new4 = Integer.parseInt(new4EditText.getText().toString());
+//                int new5 = Integer.parseInt(new5EditText.getText().toString());
+//
+//                Score score = new Score(0, );
+//                mScoreViewModel.insert(score);
+//
+//                new1EditText.setText("");
+//                new2EditText.setText("");
+//                new3EditText.setText("");
+//                new4EditText.setText("");
+//                new5EditText.setText("");
+//            } else {
+//                Toast.makeText(getApplicationContext(), "Заполните счёт всех игроков!", Toast.LENGTH_LONG).show();
+//            }
+//        });
+
         Button newRoundButton = findViewById(R.id.newRoundButton);
         newRoundButton.setOnClickListener((view) -> {
-            if (!TextUtils.isEmpty(new1EditText.getText()) &&
-                    !TextUtils.isEmpty(new2EditText.getText()) &&
-                    !TextUtils.isEmpty(new3EditText.getText()) &&
-                    !TextUtils.isEmpty(new4EditText.getText()) &&
-                    !TextUtils.isEmpty(new5EditText.getText())) {
-                int new1 = Integer.parseInt(new1EditText.getText().toString());
-                int new2 = Integer.parseInt(new2EditText.getText().toString());
-                int new3 = Integer.parseInt(new3EditText.getText().toString());
-                int new4 = Integer.parseInt(new4EditText.getText().toString());
-                int new5 = Integer.parseInt(new5EditText.getText().toString());
-
-                Score score = new Score(0, new1, new2, new3, new4, new5);
-                mScoreViewModel.insert(score);
-
-                new1EditText.setText("");
-                new2EditText.setText("");
-                new3EditText.setText("");
-                new4EditText.setText("");
-                new5EditText.setText("");
-            } else {
-                Toast.makeText(getApplicationContext(), "Заполните счёт всех игроков!", Toast.LENGTH_LONG).show();
+            String scoreData = "";
+            LinearLayout newRoundParent = findViewById(R.id.newRoundLayout);
+            for (int i = 0; i < playersCount; i++) {
+                TextView totalTextView = newRoundParent.findViewWithTag("newRound" + i);
+                String currentPlayerScore = totalTextView.getText().toString();
+                if (currentPlayerScore.isEmpty()) {
+                    Toast.makeText(getApplicationContext(), "Заполните счёт всех игроков!", Toast.LENGTH_LONG).show();
+                    break;
+                }
+                scoreData = scoreData + currentPlayerScore + ",";
             }
+            Score newScore = new Score(0, scoreData);
+            mScoreViewModel.insert(newScore);
         });
     }
 
