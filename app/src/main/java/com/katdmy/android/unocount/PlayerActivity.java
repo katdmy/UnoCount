@@ -21,6 +21,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     private PlayerViewModel mPlayerViewModel;
     private PlayerAdapter mAdapter;
+    private int playerCount;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -31,7 +32,10 @@ public class PlayerActivity extends AppCompatActivity {
         setButtons();
 
         mPlayerViewModel = new ViewModelProvider(this).get(PlayerViewModel.class);
-        mPlayerViewModel.getPlayers().observe(this, (players) -> mAdapter.setPlayers(players));
+        mPlayerViewModel.getPlayers().observe(this, (players) -> {
+            mAdapter.setPlayers(players);
+            playerCount = players.size();
+        });
     }
 
     void setRecyclerView() {
@@ -84,7 +88,7 @@ public class PlayerActivity extends AppCompatActivity {
 
     void startScoreActivity(boolean newGame) {
         Intent intent = new Intent(PlayerActivity.this, ScoreActivity.class);
-        intent.putExtra("newGame", newGame);
+        intent.putExtra("playerCount", playerCount);
         startActivity(intent);
     }
 

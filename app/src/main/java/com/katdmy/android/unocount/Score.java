@@ -11,10 +11,10 @@ public class Score {
     @NonNull
     private int mRound;
 
-    @ColumnInfo(name = "scoreData")
+    @NonNull
     private String mScoreData;
 
-    public Score(int round, String scoreData) {
+    public Score(int round, @NonNull String scoreData) {
         this.mRound = round;
         this.mScoreData = scoreData;
     }
@@ -23,7 +23,7 @@ public class Score {
         return mRound;
     }
 
-    public String gerScoreData() {
+    public String getScoreData() {
         return mScoreData;
     }
 }
