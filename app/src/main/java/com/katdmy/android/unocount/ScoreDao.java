@@ -11,4 +11,7 @@ interface ScoreDao {
 
     @Query("SELECT mName FROM player WHERE mActive = 1 ORDER BY mCode")
     LiveData<List<String>> getActivePlayers();
+
+    @Query("SELECT COUNT(1) FROM player WHERE mActive = 1")
+    int getPlayerCount();
 }

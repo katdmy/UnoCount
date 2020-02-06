@@ -17,11 +17,13 @@ import android.text.InputType;
 import android.widget.Button;
 import android.widget.EditText;
 
+import java.util.ArrayList;
+
 public class PlayerActivity extends AppCompatActivity {
 
     private PlayerViewModel mPlayerViewModel;
     private PlayerAdapter mAdapter;
-    private int playerCount;
+    private ArrayList<String> mPlayers = new ArrayList<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,7 +36,8 @@ public class PlayerActivity extends AppCompatActivity {
         mPlayerViewModel = new ViewModelProvider(this).get(PlayerViewModel.class);
         mPlayerViewModel.getPlayers().observe(this, (players) -> {
             mAdapter.setPlayers(players);
-            playerCount = players.size();
+            for (int i = 0; i < players.size(); i++)
+                mPlayers.add(players.get(i).getName());
         });
     }
 
@@ -79,16 +82,13 @@ public class PlayerActivity extends AppCompatActivity {
             builder.show();
         });
 
-        Button buttonContinue = findViewById(R.id.buttonContinue);
-        buttonContinue.setOnClickListener((v) -> startScoreActivity(false));
-
         Button buttonNew = findViewById(R.id.buttonNew);
-        buttonNew.setOnClickListener((v) -> startScoreActivity(true));
+        buttonNew.setOnClickListener((v) -> startScoreActivity());
     }
 
-    void startScoreActivity(boolean newGame) {
+    void startScoreActivity() {
         Intent intent = new Intent(PlayerActivity.this, ScoreActivity.class);
-        intent.putExtra("playerCount", playerCount);
+        intent.putStringArrayListExtra("players", mPlayers);
         startActivity(intent);
     }
 

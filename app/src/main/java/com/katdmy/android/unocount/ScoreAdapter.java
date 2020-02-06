@@ -1,18 +1,15 @@
 package com.katdmy.android.unocount;
 
 import android.content.Context;
-import android.graphics.Typeface;
-import android.text.TextUtils;
-import android.util.Log;
+import android.database.Cursor;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
-import android.widget.Toast;
 
+import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.util.StringUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -35,7 +32,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ScoreViewHol
     }
 
     private final LayoutInflater mInflater;
-    private List<Score> mScore;
+    private Cursor mCursor;
     private int mPlayerCount;
 
     ScoreAdapter(Context context, int playerCount) {
@@ -53,30 +50,25 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ScoreViewHol
 
     @Override
     public void onBindViewHolder(ScoreViewHolder holder, int position) {
-        if (mScore != null) {
-            Score current = mScore.get(position);
-            holder.roundTextView.setText(String.valueOf(current.getRound()));
-
-            //1. Надо распарсить current.getScoreData в массив строк
-            String scoreData = current.getScoreData();
-            List<Integer> data = StringUtil.splitToIntList(scoreData);
+        if (mCursor != null) {
+            mCursor.moveToPosition(position);
+            holder.roundTextView.setText(String.valueOf(position + 1));
 
             for (int i = 0; i < mPlayerCount; i++) {
-                //2. Значения получившегося массива записать в соответствующие поля
-                holder.scoreTextViews.get(i).setText(String.valueOf(data.get(i)));
+                holder.scoreTextViews.get(i).setText(String.valueOf(mCursor.getInt(i)));
             }
         }
     }
 
-    void setScore(List<Score> score) {
-        mScore = score;
+    void setScore(Cursor cursor) {
+        mCursor = cursor;
         notifyDataSetChanged();
     }
 
     @Override
     public int getItemCount() {
-        if (mScore != null)
-            return mScore.size();
+        if (mCursor != null)
+            return mCursor.getCount();
         else return 0;
     }
 

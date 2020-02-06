@@ -11,7 +11,7 @@ import androidx.sqlite.db.SupportSQLiteDatabase;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
-@Database(entities = {Score.class, Player.class}, version = 1, exportSchema = false)
+@Database(entities = {Player.class}, version = 1, exportSchema = false)
 public abstract class ScoreDatabase extends RoomDatabase {
 
     public abstract ScoreDao scoreDao();

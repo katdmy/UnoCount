@@ -2,7 +2,6 @@ package com.katdmy.android.unocount;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -26,7 +25,8 @@ public class ScoreActivity extends AppCompatActivity {
 
     private ScoreViewModel mScoreViewModel;
     private ScoreAdapter mScoreAdapter;
-    private int playerCount;
+    private ArrayList<String> mPlayers;
+    private int mPlayerCount;
     private String LOG_TAG = ScoreActivity.class.getSimpleName();
 
     @Override
@@ -34,42 +34,31 @@ public class ScoreActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
 
-        playerCount = getIntent().getExtras().getInt("playerCount");
+        mPlayers = getIntent().getExtras().getStringArrayList("players");
+        mPlayerCount = mPlayers.size();
 
         mScoreViewModel = new ViewModelProvider(this).get(ScoreViewModel.class);
-        //mScoreViewModel = ViewModelProviders.of(this, new ScoreViewModelFactory(this.getApplication(), playerCount)).get(ScoreViewModel.class);
 
         clearData();
+        createViews();
 
-        mScoreViewModel.getScore().observe(this, score -> mScoreAdapter.setScore(score));
-        mScoreViewModel.getActivePlayers().observe(this, (players) -> {
-            if (players.size() > 0) {
-                createViews(players);
-                setRecyclerView();
+        mScoreViewModel.getCursor().observe(this, (cursor) -> {
+            setRecyclerView();
+            mScoreAdapter.setScore(cursor);
+            List<Integer> total = cursor.getTotal();
+            for (int i = 0; i < mPlayerCount; i++) {
+                LinearLayout totalParent = findViewById(R.id.totalLayout);
+                TextView totalTextView = totalParent.findViewWithTag("total" + i);
+                totalTextView.setText(String.valueOf(total.get(i)));
             }
         });
-        mScoreViewModel.getTotal().observe(this, (total) -> {
-            Log.e(LOG_TAG, "Пришёл total с " + total.size() + " элементов");
-            if (total != null) {
-                for (int i = 0; i < playerCount; i++) {
-                    LinearLayout totalParent = findViewById(R.id.totalLayout);
-                    TextView totalTextView = totalParent.findViewWithTag("total" + i);
-                    totalTextView.setText(String.valueOf(total.get(i)));
-                }
-            } else {
-                for (int i = 0; i < playerCount; i++) {
-                    LinearLayout totalParent = findViewById(R.id.totalLayout);
-                    TextView totalTextView = totalParent.findViewWithTag("total" + i);
-                    totalTextView.setText("0");
-                }
-            }
-        });
+
         setButtons();
     }
 
     private void setRecyclerView() {
         RecyclerView recyclerView = findViewById(R.id.recyclerview);
-        mScoreAdapter = new ScoreAdapter(this, playerCount);
+        mScoreAdapter = new ScoreAdapter(this, mPlayerCount);
         recyclerView.setAdapter(mScoreAdapter);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
     }
@@ -77,24 +66,24 @@ public class ScoreActivity extends AppCompatActivity {
     private void setButtons() {
         Button newRoundButton = findViewById(R.id.newRoundButton);
         newRoundButton.setOnClickListener((view) -> {
-            String scoreData = "";
+            List<Integer> currentScore = new ArrayList<>();
             LinearLayout newRoundParent = findViewById(R.id.newRoundLayout);
-            for (int i = 0; i < playerCount; i++) {
+            for (int i = 0; i < mPlayerCount; i++) {
                 TextView totalTextView = newRoundParent.findViewWithTag("newRound" + i);
                 if (TextUtils.isEmpty(totalTextView.getText())) {
                     Toast.makeText(getApplicationContext(), "Заполните счёт всех игроков!", Toast.LENGTH_LONG).show();
                     break;
+                } else {
+                    int currentPlayerScore = Integer.parseInt(totalTextView.getText().toString());
+                    currentScore.add(currentPlayerScore);
                 }
-                String currentPlayerScore = totalTextView.getText().toString();
-                scoreData = scoreData + currentPlayerScore + ",";
             }
-            Score newScore = new Score(0, scoreData);
-//            mScoreViewModel.insert(newScore);
+            mScoreViewModel.insert(currentScore);
         });
     }
 
     private void clearData() {
-        //AsyncTask.execute(() -> mScoreViewModel.deleteAll());
+        AsyncTask.execute(() -> mScoreViewModel.deleteAll());
 
         int count;
         LinearLayout headerParent = findViewById(R.id.headerLayout);
@@ -119,10 +108,10 @@ public class ScoreActivity extends AppCompatActivity {
         }
     }
 
-    private void createViews(List<String> players) {
+    private void createViews() {
         LinearLayout headerParent = findViewById(R.id.headerLayout);
-        for (int i = 0; i < playerCount; i++) {
-            String name = players.get(i);
+        for (int i = 0; i < mPlayerCount; i++) {
+            String name = mPlayers.get(i);
             VerticalTextView playerTextView = new VerticalTextView(this, null);
             playerTextView.setVerticalText(name);
             playerTextView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
@@ -133,10 +122,12 @@ public class ScoreActivity extends AppCompatActivity {
             loParams.weight = 3f;
             loParams.height = headerParent.getHeight();
             playerTextView.setLayoutParams(loParams);
+
+            Log.e(LOG_TAG, "Создали заголовок столбца для игрока " + name);
         }
 
         LinearLayout totalParent = findViewById(R.id.totalLayout);
-        for (int i = 0; i < playerCount; i++) {
+        for (int i = 0; i < mPlayerCount; i++) {
             TextView totalTextView = new TextView(this);
             totalTextView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
             totalTextView.setTextAlignment(View.TEXT_ALIGNMENT_CENTER);
@@ -151,7 +142,7 @@ public class ScoreActivity extends AppCompatActivity {
         }
 
         LinearLayout newRoundParent = findViewById(R.id.newRoundLayout);
-        for (int i = 0; i < playerCount; i++) {
+        for (int i = 0; i < mPlayerCount; i++) {
             EditText newRoundEditText = new EditText(this);
             newRoundEditText.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
             newRoundEditText.setInputType(InputType.TYPE_CLASS_NUMBER);

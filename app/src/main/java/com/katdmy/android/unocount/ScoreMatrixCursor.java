@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class ScoreMatrixCursor extends MatrixCursor {
-    private MutableLiveData<List<Integer>> mTotal = new MutableLiveData<>();
+    private List<Integer> mTotal = new ArrayList<>();
 
     public ScoreMatrixCursor(String[] players) {
         super(players, 0);
@@ -36,20 +36,10 @@ public class ScoreMatrixCursor extends MatrixCursor {
             }
             super.moveToNext();
         }
-        mTotal.setValue(total);
+        mTotal = total;
     }
 
-    public LiveData<List<Integer>> getTotal() {
+    public List<Integer> getTotal() {
         return mTotal;
-    }
-
-    public List<Integer> getRound(int roundNumber) {
-        List<Integer> round = new ArrayList<>();
-        super.moveToPosition(roundNumber);
-
-        for (int i = 0; i < super.getColumnCount(); i++)
-            round.add(super.getInt(i));
-
-        return round;
     }
 }

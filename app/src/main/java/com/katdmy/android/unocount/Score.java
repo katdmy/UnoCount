@@ -1,28 +1,23 @@
 package com.katdmy.android.unocount;
 
-import androidx.annotation.NonNull;
-import androidx.room.Entity;
-import androidx.room.PrimaryKey;
+import java.util.List;
 
-@Entity
 public class Score {
-    @PrimaryKey
-    @NonNull
-    private int mRound;
 
-    @NonNull
-    private String mScoreData;
+    private List<String> mActivePlayers;
 
-    public Score(int round, @NonNull String scoreData) {
-        this.mRound = round;
-        this.mScoreData = scoreData;
+    private ScoreMatrixCursor mScoreMatrixCursor;
+
+    public Score(List<String> activePlayers, ScoreMatrixCursor scoreMatrixCursor) {
+        this.mActivePlayers = activePlayers;
+        this.mScoreMatrixCursor = scoreMatrixCursor;
     }
 
-    public int getRound() {
-        return mRound;
+    public List<String> getActivePlayers() {
+        return mActivePlayers;
     }
 
-    public String getScoreData() {
-        return mScoreData;
+    public ScoreMatrixCursor getScoreMatrixCursor() {
+        return mScoreMatrixCursor;
     }
 }

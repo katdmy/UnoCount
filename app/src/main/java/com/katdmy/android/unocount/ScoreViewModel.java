@@ -1,34 +1,34 @@
 package com.katdmy.android.unocount;
 
 import android.app.Application;
+import android.database.Cursor;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
+import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
 public class ScoreViewModel extends AndroidViewModel {
 
     private ScoreRepository mRepository;
-    private LiveData<List<Score>> mScore;
+    private LiveData<ScoreMatrixCursor> mScoreMatrixCursor;
     private LiveData<List<String>> mActivePlayers;
-    private LiveData<List<Integer>> mTotal;
 
     public ScoreViewModel(Application application) {
         super(application);
         mRepository = new ScoreRepository(application);
-        //mScore = mRepository.getScore();
+        mScoreMatrixCursor = mRepository.getCursor();
         mActivePlayers = mRepository.getActivePlayers();
-        mTotal = mRepository.getTotal();
     }
 
-    LiveData<List<Score>> getScore() {
-        return mScore;
+    LiveData<ScoreMatrixCursor> getCursor() {
+        return mScoreMatrixCursor;
     }
 
-//    void deleteAll() {
-//        mRepository.deleteAll();
-//    }
+    void deleteAll() {
+        mRepository.deleteAll();
+    }
 
     public void insert(List<Integer> currentScore) {
         mRepository.insert(currentScore);
@@ -38,7 +38,4 @@ public class ScoreViewModel extends AndroidViewModel {
         return mActivePlayers;
     }
 
-    public LiveData<List<Integer>> getTotal() {
-        return mTotal;
-    }
 }
