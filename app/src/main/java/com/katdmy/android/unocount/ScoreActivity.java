@@ -2,6 +2,7 @@ package com.katdmy.android.unocount;
 
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
+import androidx.lifecycle.ViewModelProviders;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -36,6 +37,7 @@ public class ScoreActivity extends AppCompatActivity {
         playerCount = getIntent().getExtras().getInt("playerCount");
 
         mScoreViewModel = new ViewModelProvider(this).get(ScoreViewModel.class);
+        //mScoreViewModel = ViewModelProviders.of(this, new ScoreViewModelFactory(this.getApplication(), playerCount)).get(ScoreViewModel.class);
 
         clearData();
 
@@ -47,6 +49,7 @@ public class ScoreActivity extends AppCompatActivity {
             }
         });
         mScoreViewModel.getTotal().observe(this, (total) -> {
+            Log.e(LOG_TAG, "Пришёл total с " + total.size() + " элементов");
             if (total != null) {
                 for (int i = 0; i < playerCount; i++) {
                     LinearLayout totalParent = findViewById(R.id.totalLayout);
@@ -86,12 +89,12 @@ public class ScoreActivity extends AppCompatActivity {
                 scoreData = scoreData + currentPlayerScore + ",";
             }
             Score newScore = new Score(0, scoreData);
-            mScoreViewModel.insert(newScore);
+//            mScoreViewModel.insert(newScore);
         });
     }
 
     private void clearData() {
-        AsyncTask.execute(() -> mScoreViewModel.deleteAll());
+        //AsyncTask.execute(() -> mScoreViewModel.deleteAll());
 
         int count;
         LinearLayout headerParent = findViewById(R.id.headerLayout);

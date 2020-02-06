@@ -17,7 +17,7 @@ public class ScoreViewModel extends AndroidViewModel {
     public ScoreViewModel(Application application) {
         super(application);
         mRepository = new ScoreRepository(application);
-        mScore = mRepository.getScore();
+        //mScore = mRepository.getScore();
         mActivePlayers = mRepository.getActivePlayers();
         mTotal = mRepository.getTotal();
     }
@@ -26,12 +26,12 @@ public class ScoreViewModel extends AndroidViewModel {
         return mScore;
     }
 
-    void deleteAll() {
-        mRepository.deleteAll();
-    }
+//    void deleteAll() {
+//        mRepository.deleteAll();
+//    }
 
-    public void insert(Score score) {
-        mRepository.insert(score);
+    public void insert(List<Integer> currentScore) {
+        mRepository.insert(currentScore);
     }
 
     public LiveData<List<String>> getActivePlayers() {
