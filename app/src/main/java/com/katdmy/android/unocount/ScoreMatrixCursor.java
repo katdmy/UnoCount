@@ -2,41 +2,29 @@ package com.katdmy.android.unocount;
 
 import android.database.MatrixCursor;
 
-import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
-
 import java.util.ArrayList;
 import java.util.List;
 
 public class ScoreMatrixCursor extends MatrixCursor {
-    private List<Integer> mTotal = new ArrayList<>();
+    private List<Integer> mTotal;
 
     public ScoreMatrixCursor(String[] players) {
         super(players, 0);
-        updateTotal();
+        mTotal = new ArrayList<>();
+
+        for (String i : super.getColumnNames()) {
+            mTotal.add(0);
+        }
     }
 
     @Override
-    public void addRow(Object[] columnValues) {
+    public void addRow(Iterable<?> columnValues) {
         super.addRow(columnValues);
-        updateTotal();
-    }
 
-    private void updateTotal() {
-        List<Integer> total = new ArrayList<>();
-        super.moveToFirst();
-
-        for (String i : super.getColumnNames()) {
-            total.add(0);
+        ArrayList<Integer> list = (ArrayList<Integer>) columnValues;
+        for (int i = 0; i < list.size(); i++) {
+            mTotal.set(i, mTotal.get(i) + list.get(i));
         }
-
-        while (!super.isAfterLast()) {
-            for (int i = 0; i < super.getCount(); i++) {
-                total.set(i, total.get(i) + super.getInt(i));
-            }
-            super.moveToNext();
-        }
-        mTotal = total;
     }
 
     public List<Integer> getTotal() {

@@ -1,11 +1,9 @@
 package com.katdmy.android.unocount;
 
 import android.app.Application;
-import android.database.Cursor;
 
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
-import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 

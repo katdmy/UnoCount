@@ -10,7 +10,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -79,6 +78,10 @@ public class ScoreActivity extends AppCompatActivity {
                 }
             }
             mScoreViewModel.insert(currentScore);
+            for (int i = 0; i < mPlayerCount; i++) {
+                TextView totalTextView = newRoundParent.findViewWithTag("newRound" + i);
+                totalTextView.setText("");
+            }
         });
     }
 
@@ -113,18 +116,18 @@ public class ScoreActivity extends AppCompatActivity {
         for (int i = 0; i < mPlayerCount; i++) {
             String name = mPlayers.get(i);
             VerticalTextView playerTextView = new VerticalTextView(this, null);
-            playerTextView.setVerticalText(name);
+            playerTextView.setText(name);
+            playerTextView.setTag("header" + i);
             playerTextView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL));
             headerParent.addView(playerTextView);
 
             LinearLayout.LayoutParams loParams = (LinearLayout.LayoutParams) playerTextView.getLayoutParams();
             loParams.width = 0;
             loParams.weight = 3f;
-            loParams.height = headerParent.getHeight();
+            loParams.height = LinearLayout.LayoutParams.MATCH_PARENT;
             playerTextView.setLayoutParams(loParams);
-
-            Log.e(LOG_TAG, "Создали заголовок столбца для игрока " + name);
         }
+
 
         LinearLayout totalParent = findViewById(R.id.totalLayout);
         for (int i = 0; i < mPlayerCount; i++) {
