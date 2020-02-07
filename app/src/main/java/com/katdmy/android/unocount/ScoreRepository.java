@@ -1,54 +1,51 @@
 package com.katdmy.android.unocount;
 
-import android.app.Application;
-import android.os.AsyncTask;
+import android.util.Log;
 
 import androidx.lifecycle.LiveData;
 import androidx.lifecycle.MutableLiveData;
 
 import java.util.List;
 
-public class ScoreRepository {
+class ScoreRepository {
 
-    private ScoreDao mScoreDao;
     private MutableLiveData<ScoreMatrixCursor> mScoreMatrixCursor = new MutableLiveData<>();
-    private LiveData<List<String>> mActivePlayers;
     private int mPlayerCount;
+    private String LOG_TAG = ScoreRepository.class.getSimpleName();
 
-    ScoreRepository(Application application) {
-        ScoreDatabase db = ScoreDatabase.getDatabase(application);
-        mScoreDao = db.scoreDao();
-        mActivePlayers = mScoreDao.getActivePlayers();
-
-        AsyncTask.execute(() -> {
-            mPlayerCount = mScoreDao.getPlayerCount();
-
-            String[] players = new String[mPlayerCount];
-            for (int i = 0; i < mPlayerCount; i++)
-                players[i] = "player" + i;
-            ScoreMatrixCursor cursor = new ScoreMatrixCursor(players);
-            mScoreMatrixCursor.postValue(cursor);
-        });
+    ScoreRepository(int playerCount) {
+        setPlayerCount(playerCount);
     }
 
-    public LiveData<ScoreMatrixCursor> getCursor() {
+    void setPlayerCount(int playerCount) {
+        mPlayerCount = playerCount;
+
+        String[] players = new String[mPlayerCount];
+        for (int i = 0; i < mPlayerCount; i++)
+            players[i] = "player" + i;
+        ScoreMatrixCursor cursor = new ScoreMatrixCursor(players);
+        mScoreMatrixCursor.postValue(cursor);
+    }
+
+    LiveData<ScoreMatrixCursor> getCursor() {
         return mScoreMatrixCursor;
     }
 
-    public void deleteAll() {
+    void deleteAll() {
         String[] players = new String[mPlayerCount];
         for (int i = 0; i < mPlayerCount; i++)
             players[i] = "player" + i;
         mScoreMatrixCursor.postValue(new ScoreMatrixCursor(players));
     }
 
-    public void insert(List<Integer> currentScore) {
+    void insert(List<Integer> currentScore) {
         ScoreMatrixCursor cursor = mScoreMatrixCursor.getValue();
-        cursor.addRow(currentScore);
-        mScoreMatrixCursor.setValue(cursor);
+        if (cursor != null) {
+            cursor.addRow(currentScore);
+            mScoreMatrixCursor.setValue(cursor);
+        } else {
+            Log.e(LOG_TAG, "Error in accessing score storage class");
+        }
     }
 
-    public LiveData<List<String>> getActivePlayers() {
-        return mActivePlayers;
-    }
 }

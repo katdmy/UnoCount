@@ -6,27 +6,31 @@ import androidx.lifecycle.LiveData;
 
 import java.util.List;
 
-public class PlayerRepository {
+class PlayerRepository {
     private PlayerDao mPlayerDao;
 
-    public PlayerRepository(Application application) {
-        ScoreDatabase db = ScoreDatabase.getDatabase(application);
+    PlayerRepository(Application application) {
+        PlayerDatabase db = PlayerDatabase.getDatabase(application);
         mPlayerDao = db.playerDao();
     }
 
-    public LiveData<List<Player>> getPlayers() {
+    LiveData<List<Player>> getPlayers() {
         return mPlayerDao.getPlayers();
     }
 
-    public void setActive(int code, boolean active) {
+    LiveData<List<String>> getActivePlayers() {
+        return mPlayerDao.getActivePlayers();
+    }
+
+    void setActive(int code, boolean active) {
         mPlayerDao.setActive(code, active);
     }
 
-    public void addPlayer(Player player) {
+    void addPlayer(Player player) {
         mPlayerDao.addPlayer(player);
     }
 
-    public void deletePlayer(Player player) {
+    void deletePlayer(Player player) {
         mPlayerDao.deletePlayer(player);
     }
 }

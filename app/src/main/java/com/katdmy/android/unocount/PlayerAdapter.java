@@ -1,11 +1,14 @@
 package com.katdmy.android.unocount;
 
 import android.content.Context;
+import android.os.AsyncTask;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.Button;
+import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -18,58 +21,71 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
 
     private final LayoutInflater mInflater;
     private List<Player> mPlayers;
-    private OnItemClickListener mListener;
+    private OnItemClickListener mClickListener;
+    private OnCheckedChangeListener mCheckedListener;
 
     public interface OnItemClickListener {
-        void onActiveClick(int code, boolean active);
-
         void onDeleteClick(Player player);
     }
 
-    public void setOnItemClickListener(OnItemClickListener listener) {
-        mListener = listener;
+    void setOnItemClickListener(OnItemClickListener clickListener) {
+        mClickListener = clickListener;
     }
 
-    public static class PlayerViewHolder extends RecyclerView.ViewHolder {
+    public interface OnCheckedChangeListener {
+        void onCheckedChange(int playerCode, boolean isChecked);
+    }
+
+    void setOnCheckedChangeListener(OnCheckedChangeListener checkedListener) {
+        mCheckedListener = checkedListener;
+    }
+
+    static class PlayerViewHolder extends RecyclerView.ViewHolder {
         private final Switch activeSwitch;
         private final TextView nameTextView;
         private final ImageView deleteImage;
+        private String LOG_TAG = PlayerViewHolder.class.getSimpleName();
 
-        private PlayerViewHolder(View itemView, final OnItemClickListener listener, List<Player> players) {
+        private PlayerViewHolder(View itemView,
+                                 final OnItemClickListener clickListener,
+                                 final OnCheckedChangeListener checkedListener,
+                                 List<Player> players) {
             super(itemView);
             activeSwitch = itemView.findViewById(R.id.activeSwitch);
             nameTextView = itemView.findViewById(R.id.nameTextView);
             deleteImage = itemView.findViewById(R.id.deleteImage);
 
-            activeSwitch.setOnClickListener(v -> {
-                if (listener != null) {
-                    int position = getAdapterPosition();
+            activeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
+                if (checkedListener != null) {
+                    int position = PlayerViewHolder.this.getAdapterPosition();
+                    Log.e(LOG_TAG, "Trying to make player " + position + " " + (isChecked ? "" : "in") + "active.");
                     if (position != RecyclerView.NO_POSITION) {
                         Player player = players.get(position);
-                        listener.onActiveClick(player.getCode(), player.getActive());
+                        checkedListener.onCheckedChange(player.getCode(), isChecked);
                     }
                 }
             });
 
             deleteImage.setOnClickListener(v -> {
-                if (listener != null) {
+                if (clickListener != null) {
                     int position = getAdapterPosition();
+                    Log.e(LOG_TAG, "Trying to delete player " + position + ".");
                     if (position != RecyclerView.NO_POSITION)
-                        listener.onDeleteClick(players.get(position));
+                        clickListener.onDeleteClick(players.get(position));
                 }
             });
         }
     }
 
 
-    public PlayerAdapter(Context context) {
+    PlayerAdapter(Context context) {
         mInflater = LayoutInflater.from(context);
     }
 
     @Override
     public PlayerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
         View itemView = mInflater.inflate(R.layout.player_item, parent, false);
-        return new PlayerViewHolder(itemView, mListener, mPlayers);
+        return new PlayerViewHolder(itemView, mClickListener, mCheckedListener, mPlayers);
     }
 
     @Override

@@ -11,13 +11,12 @@ public class ScoreViewModel extends AndroidViewModel {
 
     private ScoreRepository mRepository;
     private LiveData<ScoreMatrixCursor> mScoreMatrixCursor;
-    private LiveData<List<String>> mActivePlayers;
+    private int mPlayerCount = 1;
 
     public ScoreViewModel(Application application) {
         super(application);
-        mRepository = new ScoreRepository(application);
+        mRepository = new ScoreRepository(mPlayerCount);
         mScoreMatrixCursor = mRepository.getCursor();
-        mActivePlayers = mRepository.getActivePlayers();
     }
 
     LiveData<ScoreMatrixCursor> getCursor() {
@@ -28,12 +27,12 @@ public class ScoreViewModel extends AndroidViewModel {
         mRepository.deleteAll();
     }
 
-    public void insert(List<Integer> currentScore) {
+    void insert(List<Integer> currentScore) {
         mRepository.insert(currentScore);
     }
 
-    public LiveData<List<String>> getActivePlayers() {
-        return mActivePlayers;
+    void setPlayerCount(int playerCount) {
+        mPlayerCount = playerCount;
+        mRepository.setPlayerCount(playerCount);
     }
-
 }

@@ -23,7 +23,8 @@ public class PlayerActivity extends AppCompatActivity {
 
     private PlayerViewModel mPlayerViewModel;
     private PlayerAdapter mAdapter;
-    private ArrayList<String> mPlayers = new ArrayList<>();
+    private ArrayList<String> mActivePlayers;
+    private Button mButtonNew;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -34,10 +35,14 @@ public class PlayerActivity extends AppCompatActivity {
         setButtons();
 
         mPlayerViewModel = new ViewModelProvider(this).get(PlayerViewModel.class);
-        mPlayerViewModel.getPlayers().observe(this, (players) -> {
-            mAdapter.setPlayers(players);
-            for (int i = 0; i < players.size(); i++)
-                mPlayers.add(players.get(i).getName());
+        mPlayerViewModel.getPlayers().observe(this, (players) -> mAdapter.setPlayers(players));
+        mPlayerViewModel.getActivePlayers().observe(this, (activePlayers) -> {
+            mActivePlayers = (ArrayList<String>) activePlayers;
+            if (mActivePlayers.size() == 0) {
+                mButtonNew.setEnabled(false);
+            } else {
+                mButtonNew.setEnabled(true);
+            }
         });
     }
 
@@ -51,17 +56,9 @@ public class PlayerActivity extends AppCompatActivity {
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(itemDecoration);
 
-        mAdapter.setOnItemClickListener(new PlayerAdapter.OnItemClickListener() {
-            @Override
-            public void onActiveClick(int code, boolean active) {
-                AsyncTask.execute(() -> mPlayerViewModel.setActive(code, !active));
-            }
-
-            @Override
-            public void onDeleteClick(Player player) {
-                AsyncTask.execute(() -> mPlayerViewModel.deletePlayer(player));
-            }
-        });
+        mAdapter.setOnItemClickListener(player -> AsyncTask.execute(() -> mPlayerViewModel.deletePlayer(player)));
+        mAdapter.setOnCheckedChangeListener((player, isChecked) ->
+                AsyncTask.execute(() -> mPlayerViewModel.setActive(player, isChecked)));
     }
 
     void setButtons() {
@@ -82,13 +79,13 @@ public class PlayerActivity extends AppCompatActivity {
             builder.show();
         });
 
-        Button buttonNew = findViewById(R.id.buttonNew);
-        buttonNew.setOnClickListener((v) -> startScoreActivity());
+        mButtonNew = findViewById(R.id.buttonNew);
+        mButtonNew.setOnClickListener((v) -> startScoreActivity());
     }
 
     void startScoreActivity() {
         Intent intent = new Intent(PlayerActivity.this, ScoreActivity.class);
-        intent.putStringArrayListExtra("players", mPlayers);
+        intent.putStringArrayListExtra("players", mActivePlayers);
         startActivity(intent);
     }
 

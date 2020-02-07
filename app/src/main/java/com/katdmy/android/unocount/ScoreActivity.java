@@ -19,6 +19,7 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class ScoreActivity extends AppCompatActivity {
 
@@ -33,10 +34,20 @@ public class ScoreActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_score);
 
+        Bundle extras = getIntent().getExtras();
+        if (extras == null) {
+            Toast.makeText(this, "Error in getting active players list.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
         mPlayers = getIntent().getExtras().getStringArrayList("players");
+        if (mPlayers == null) {
+            Toast.makeText(this, "Got zero active players.", Toast.LENGTH_SHORT).show();
+            finish();
+        }
         mPlayerCount = mPlayers.size();
 
         mScoreViewModel = new ViewModelProvider(this).get(ScoreViewModel.class);
+        mScoreViewModel.setPlayerCount(mPlayerCount);
 
         clearData();
         createViews();
@@ -45,7 +56,7 @@ public class ScoreActivity extends AppCompatActivity {
             setRecyclerView();
             mScoreAdapter.setScore(cursor);
             List<Integer> total = cursor.getTotal();
-            for (int i = 0; i < mPlayerCount; i++) {
+            for (int i = 0; i < total.size(); i++) {
                 LinearLayout totalParent = findViewById(R.id.totalLayout);
                 TextView totalTextView = totalParent.findViewWithTag("total" + i);
                 totalTextView.setText(String.valueOf(total.get(i)));
@@ -68,20 +79,22 @@ public class ScoreActivity extends AppCompatActivity {
             List<Integer> currentScore = new ArrayList<>();
             LinearLayout newRoundParent = findViewById(R.id.newRoundLayout);
             for (int i = 0; i < mPlayerCount; i++) {
-                TextView totalTextView = newRoundParent.findViewWithTag("newRound" + i);
-                if (TextUtils.isEmpty(totalTextView.getText())) {
-                    Toast.makeText(getApplicationContext(), "Заполните счёт всех игроков!", Toast.LENGTH_LONG).show();
-                    break;
+                TextView currentTextView = newRoundParent.findViewWithTag("newRound" + i);
+                if (TextUtils.isEmpty(currentTextView.getText())) {
+                    currentScore.add(0);
                 } else {
-                    int currentPlayerScore = Integer.parseInt(totalTextView.getText().toString());
+                    int currentPlayerScore = Integer.parseInt(currentTextView.getText().toString());
                     currentScore.add(currentPlayerScore);
                 }
             }
             mScoreViewModel.insert(currentScore);
             for (int i = 0; i < mPlayerCount; i++) {
-                TextView totalTextView = newRoundParent.findViewWithTag("newRound" + i);
-                totalTextView.setText("");
+                TextView currentTextView = newRoundParent.findViewWithTag("newRound" + i);
+                currentTextView.setText("");
             }
+            TextView current1TextView = newRoundParent.findViewWithTag("newRound0");
+            current1TextView.setFocusableInTouchMode(true);
+            current1TextView.requestFocus();
         });
     }
 

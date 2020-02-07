@@ -5,6 +5,7 @@ import android.app.Application;
 import androidx.lifecycle.AndroidViewModel;
 import androidx.lifecycle.LiveData;
 
+import java.util.ArrayList;
 import java.util.List;
 
 public class PlayerViewModel extends AndroidViewModel {
@@ -13,25 +14,32 @@ public class PlayerViewModel extends AndroidViewModel {
 
     private LiveData<List<Player>> mPlayers;
 
+    private LiveData<List<String>> mActivePlayers;
+
     public PlayerViewModel(Application application) {
         super(application);
         mPlayerRepository = new PlayerRepository(application);
         mPlayers = mPlayerRepository.getPlayers();
+        mActivePlayers = mPlayerRepository.getActivePlayers();
     }
 
-    public LiveData<List<Player>> getPlayers() {
+    LiveData<List<Player>> getPlayers() {
         return mPlayers;
     }
 
-    public void setActive(int code, boolean active) {
+    LiveData<List<String>> getActivePlayers() {
+        return mActivePlayers;
+    }
+
+    void setActive(int code, boolean active) {
         mPlayerRepository.setActive(code, active);
     }
 
-    public void insertPlayer(Player player) {
+    void insertPlayer(Player player) {
         mPlayerRepository.addPlayer(player);
     }
 
-    public void deletePlayer(Player player) {
+    void deletePlayer(Player player) {
         mPlayerRepository.deletePlayer(player);
     }
 }
