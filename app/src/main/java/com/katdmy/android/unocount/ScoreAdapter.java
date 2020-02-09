@@ -8,6 +8,7 @@ import android.view.ViewGroup;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 import androidx.recyclerview.widget.RecyclerView;
 
@@ -40,20 +41,19 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ScoreViewHol
         mPlayerCount = playerCount;
     }
 
+    @NonNull
     @Override
-    public ScoreViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public ScoreViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = mInflater.inflate(R.layout.score_item, parent, false);
-        deleteStaticChildren(itemView);
         createItemView(itemView, mPlayerCount);
         return new ScoreViewHolder(itemView);
     }
 
     @Override
-    public void onBindViewHolder(ScoreViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull ScoreViewHolder holder, int position) {
         if (mCursor != null) {
             mCursor.moveToPosition(position);
             holder.roundTextView.setText(String.valueOf(position + 1));
-
             for (int i = 0; i < mPlayerCount; i++) {
                 holder.scoreTextViews.get(i).setText(String.valueOf(mCursor.getInt(i)));
             }
@@ -72,16 +72,7 @@ public class ScoreAdapter extends RecyclerView.Adapter<ScoreAdapter.ScoreViewHol
         else return 0;
     }
 
-    public void deleteStaticChildren(View parent) {
-        LinearLayout scoreParent = parent.findViewById(R.id.scoreLayout);
-        int count = scoreParent.getChildCount();
-        for (int i = 1; i < count; i++) {
-            TextView childView = (TextView) scoreParent.getChildAt(1);
-            scoreParent.removeView(childView);
-        }
-    }
-
-    public void createItemView(View parent, int playerCount) {
+    private void createItemView(View parent, int playerCount) {
         LinearLayout scoreParent = parent.findViewById(R.id.scoreLayout);
         for (int i = 0; i < playerCount; i++) {
             TextView scoreTextView = new TextView(parent.getContext());

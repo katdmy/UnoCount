@@ -11,15 +11,14 @@ import android.os.Bundle;
 import android.text.InputType;
 import android.text.TextUtils;
 import android.view.View;
-import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
 
 public class ScoreActivity extends AppCompatActivity {
 
@@ -27,7 +26,6 @@ public class ScoreActivity extends AppCompatActivity {
     private ScoreAdapter mScoreAdapter;
     private ArrayList<String> mPlayers;
     private int mPlayerCount;
-    private String LOG_TAG = ScoreActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -74,7 +72,7 @@ public class ScoreActivity extends AppCompatActivity {
     }
 
     private void setButtons() {
-        Button newRoundButton = findViewById(R.id.newRoundButton);
+        ImageView newRoundButton = findViewById(R.id.newRoundButton);
         newRoundButton.setOnClickListener((view) -> {
             List<Integer> currentScore = new ArrayList<>();
             LinearLayout newRoundParent = findViewById(R.id.newRoundLayout);
@@ -100,28 +98,6 @@ public class ScoreActivity extends AppCompatActivity {
 
     private void clearData() {
         AsyncTask.execute(() -> mScoreViewModel.deleteAll());
-
-        int count;
-        LinearLayout headerParent = findViewById(R.id.headerLayout);
-        count = headerParent.getChildCount();
-        for (int i = 1; i < count; i++) {
-            TextView childView = (TextView) headerParent.getChildAt(1);
-            headerParent.removeView(childView);
-        }
-
-        LinearLayout totalParent = findViewById(R.id.totalLayout);
-        count = totalParent.getChildCount();
-        for (int i = 1; i < count; i++) {
-            TextView childView = (TextView) totalParent.getChildAt(1);
-            totalParent.removeView(childView);
-        }
-
-        LinearLayout newRoundParent = findViewById(R.id.newRoundLayout);
-        count = newRoundParent.getChildCount();
-        for (int i = 1; i < count; i++) {
-            TextView childView = (TextView) newRoundParent.getChildAt(1);
-            newRoundParent.removeView(childView);
-        }
     }
 
     private void createViews() {

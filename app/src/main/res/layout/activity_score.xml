@@ -19,48 +19,9 @@
             android:layout_height="match_parent"
             android:layout_weight="2"
             android:fontFamily="sans-serif-black"
-            android:text="Раунд"
+            android:textColor="#AAAAAA"
+            android:text="@string/roundHeaderText"
             android:id="@+id/headerRoundTextView" />
-
-        <com.katdmy.android.unocount.VerticalTextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:fontFamily="sans-serif-black"
-            android:text="Вася"
-            android:id="@+id/header1TextView" />
-
-        <com.katdmy.android.unocount.VerticalTextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:fontFamily="sans-serif-black"
-            android:text="Боря"
-            android:id="@+id/header2TextView" />
-
-        <com.katdmy.android.unocount.VerticalTextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:fontFamily="sans-serif-black"
-            android:text="Света"
-            android:id="@+id/header3TextView" />
-
-        <com.katdmy.android.unocount.VerticalTextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:fontFamily="sans-serif-black"
-            android:text="Коля"
-            android:id="@+id/header4TextView" />
-
-        <com.katdmy.android.unocount.VerticalTextView
-            android:layout_width="0dp"
-            android:layout_height="match_parent"
-            android:layout_weight="3"
-            android:fontFamily="sans-serif-black"
-            android:text="Маша"
-            android:id="@+id/header5TextView" />
     </LinearLayout>
 
     <LinearLayout
@@ -78,48 +39,8 @@
             android:layout_weight="2"
             android:textAlignment="center"
             android:fontFamily="sans-serif-black"
-            android:text="Итог:"
+            android:text="@string/Total"
             android:id="@+id/totalRoundTextView" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:textAlignment="center"
-            android:fontFamily="sans-serif-black"
-            android:id="@+id/total1TextView" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:textAlignment="center"
-            android:fontFamily="sans-serif-black"
-            android:id="@+id/total2TextView" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:textAlignment="center"
-            android:fontFamily="sans-serif-black"
-            android:id="@+id/total3TextView" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:textAlignment="center"
-            android:fontFamily="sans-serif-black"
-            android:id="@+id/total4TextView" />
-
-        <TextView
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:textAlignment="center"
-            android:fontFamily="sans-serif-black"
-            android:id="@+id/total5TextView" />
     </LinearLayout>
 
     <LinearLayout
@@ -131,59 +52,14 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
-        <Button
+        <ImageView
             android:layout_width="0dp"
             android:layout_height="wrap_content"
             android:layout_weight="2"
-            android:textAlignment="center"
-            android:fontFamily="sans-serif-black"
-            android:text="+"
-            android:id="@+id/newRoundButton" />
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:textAlignment="center"
-            android:inputType="number"
-            android:fontFamily="sans-serif-black"
-            android:id="@+id/new1EditText" />
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:textAlignment="center"
-            android:inputType="number"
-            android:fontFamily="sans-serif-black"
-            android:id="@+id/new2EditText" />
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:textAlignment="center"
-            android:inputType="number"
-            android:fontFamily="sans-serif-black"
-            android:id="@+id/new3EditText" />
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:textAlignment="center"
-            android:inputType="number"
-            android:fontFamily="sans-serif-black"
-            android:id="@+id/new4EditText" />
-
-        <EditText
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_weight="3"
-            android:textAlignment="center"
-            android:inputType="number"
-            android:fontFamily="sans-serif-black"
-            android:id="@+id/new5EditText" />
+            android:src="@android:drawable/ic_menu_add"
+            android:tint="@color/colorPrimaryDark"
+            android:id="@+id/newRoundButton"
+            android:contentDescription="@string/newRoundAddHint" />
     </LinearLayout>
 
     <androidx.recyclerview.widget.RecyclerView
