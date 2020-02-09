@@ -8,12 +8,15 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
+import androidx.room.util.StringUtil;
 
 import android.text.InputType;
+import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -25,6 +28,7 @@ public class PlayerActivity extends AppCompatActivity {
     private PlayerAdapter mAdapter;
     private ArrayList<String> mActivePlayers;
     private Button mButtonNew;
+    private String LOG_TAG = PlayerActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -56,7 +60,11 @@ public class PlayerActivity extends AppCompatActivity {
                 DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
         recyclerView.addItemDecoration(itemDecoration);
 
-        mAdapter.setOnItemClickListener(player -> AsyncTask.execute(() -> mPlayerViewModel.deletePlayer(player)));
+        mAdapter.setOnItemClickListener(player ->
+                AsyncTask.execute(() -> {
+                    mPlayerViewModel.deletePlayer(player);
+                    Log.e(LOG_TAG, "Command to delete player (" + player.getName() + ") sent to ViewModel.");
+                }));
         mAdapter.setOnCheckedChangeListener((player, isChecked) ->
                 AsyncTask.execute(() -> mPlayerViewModel.setActive(player, isChecked)));
     }
@@ -71,7 +79,8 @@ public class PlayerActivity extends AppCompatActivity {
             builder.setView(input);
             builder.setPositiveButton("Сохранить", (dialog, which) -> {
                 String newName = input.getText().toString();
-                AsyncTask.execute(() -> mPlayerViewModel.insertPlayer(new Player(newName)));
+                if (!newName.isEmpty())
+                    AsyncTask.execute(() -> mPlayerViewModel.insertPlayer(new Player(newName)));
                 dialog.dismiss();
             });
             builder.setNegativeButton("Отмена", (dialog, which) -> dialog.cancel());

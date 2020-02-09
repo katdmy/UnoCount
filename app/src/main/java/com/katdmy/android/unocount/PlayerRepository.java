@@ -22,12 +22,13 @@ class PlayerRepository {
         return mPlayerDao.getActivePlayers();
     }
 
-    void setActive(int code, boolean active) {
-        mPlayerDao.setActive(code, active);
+    void setActive(String name, boolean active) {
+        mPlayerDao.setActive(name, active);
     }
 
     void addPlayer(Player player) {
-        mPlayerDao.addPlayer(player);
+        if (mPlayerDao.getPlayerByName(player.getName()).size() == 0)
+            mPlayerDao.addPlayer(player);
     }
 
     void deletePlayer(Player player) {

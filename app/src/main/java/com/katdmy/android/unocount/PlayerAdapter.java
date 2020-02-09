@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
 
+import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.List;
@@ -33,7 +34,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
     }
 
     public interface OnCheckedChangeListener {
-        void onCheckedChange(int playerCode, boolean isChecked);
+        void onCheckedChange(String playerName, boolean isChecked);
     }
 
     void setOnCheckedChangeListener(OnCheckedChangeListener checkedListener) {
@@ -58,10 +59,9 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
             activeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (checkedListener != null) {
                     int position = PlayerViewHolder.this.getAdapterPosition();
-                    Log.e(LOG_TAG, "Trying to make player " + position + " " + (isChecked ? "" : "in") + "active.");
                     if (position != RecyclerView.NO_POSITION) {
                         Player player = players.get(position);
-                        checkedListener.onCheckedChange(player.getCode(), isChecked);
+                        checkedListener.onCheckedChange(player.getName(), isChecked);
                     }
                 }
             });
@@ -69,9 +69,11 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
             deleteImage.setOnClickListener(v -> {
                 if (clickListener != null) {
                     int position = getAdapterPosition();
-                    Log.e(LOG_TAG, "Trying to delete player " + position + ".");
+                    Log.e(LOG_TAG, "Button is pressed to delete player " + position + ".");
                     if (position != RecyclerView.NO_POSITION)
+                        Log.e(LOG_TAG, "Start trying to delete player " + position + ".");
                         clickListener.onDeleteClick(players.get(position));
+                    Log.e(LOG_TAG, "Start trying to delete player " + position + ".");
                 }
             });
         }
@@ -82,14 +84,15 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
         mInflater = LayoutInflater.from(context);
     }
 
+    @NonNull
     @Override
-    public PlayerViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+    public PlayerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = mInflater.inflate(R.layout.player_item, parent, false);
         return new PlayerViewHolder(itemView, mClickListener, mCheckedListener, mPlayers);
     }
 
     @Override
-    public void onBindViewHolder(PlayerViewHolder holder, int position) {
+    public void onBindViewHolder(@NonNull PlayerViewHolder holder, int position) {
         if (mPlayers != null) {
             Player player = mPlayers.get(position);
             holder.activeSwitch.setChecked(player.getActive());

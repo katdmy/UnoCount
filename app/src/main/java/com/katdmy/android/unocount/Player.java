@@ -6,37 +6,26 @@ import androidx.room.PrimaryKey;
 
 @Entity
 public class Player {
-    @PrimaryKey(autoGenerate = true)
+    @PrimaryKey
     @NonNull
-    private int mCode;
-
     private String mName;
 
     private boolean mActive;
 
-    public Player(String name) {
-        mCode = 0;
+    Player(@NonNull String name) {
         mName = name;
         mActive = true;
-    }
-
-    public int getCode() {
-        return mCode;
     }
 
     public String getName() {
         return mName;
     }
 
-    public boolean getActive() {
+    boolean getActive() {
         return mActive;
     }
 
-    public void setCode(int code) {
-        mCode = code;
-    }
-
-    public void setActive(boolean active) {
+    void setActive(boolean active) {
         mActive = active;
     }
 }

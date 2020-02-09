@@ -11,17 +11,20 @@ import java.util.List;
 
 @Dao
 public interface PlayerDao {
-    @Query("SELECT * FROM player ORDER BY mCode")
+    @Query("SELECT * FROM player")
     LiveData<List<Player>> getPlayers();
 
-    @Query("SELECT mName FROM player WHERE mActive = 1 ORDER BY mCode")
+    @Query("SELECT * FROM player WHERE mName=:name")
+    List<Player> getPlayerByName(String name);
+
+    @Query("SELECT mName FROM player WHERE mActive = 1")
     LiveData<List<String>> getActivePlayers();
 
     @Insert
     void addPlayer(Player player);
 
-    @Query("UPDATE player SET mActive=:active WHERE mCode=:code")
-    void setActive(int code, boolean active);
+    @Query("UPDATE player SET mActive=:active WHERE mName=:name")
+    void setActive(String name, boolean active);
 
     @Delete
     void deletePlayer(Player player);
