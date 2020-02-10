@@ -22,8 +22,8 @@ class PlayerRepository {
         return mPlayerDao.getActivePlayers();
     }
 
-    void setActive(String name, boolean active) {
-        mPlayerDao.setActive(name, active);
+    void setActive(String playerName, boolean active) {
+        mPlayerDao.setActive(playerName, active);
     }
 
     void addPlayer(Player player) {

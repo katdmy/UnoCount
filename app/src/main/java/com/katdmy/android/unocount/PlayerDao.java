@@ -23,8 +23,8 @@ public interface PlayerDao {
     @Insert
     void addPlayer(Player player);
 
-    @Query("UPDATE player SET mActive=:active WHERE mName=:name")
-    void setActive(String name, boolean active);
+    @Query("UPDATE player SET mActive=:active WHERE mName=:playerName")
+    void setActive(String playerName, boolean active);
 
     @Delete
     void deletePlayer(Player player);

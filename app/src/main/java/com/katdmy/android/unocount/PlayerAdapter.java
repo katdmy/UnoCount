@@ -1,14 +1,10 @@
 package com.katdmy.android.unocount;
 
 import android.content.Context;
-import android.os.AsyncTask;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AdapterView;
-import android.widget.Button;
-import android.widget.CompoundButton;
 import android.widget.ImageView;
 import android.widget.Switch;
 import android.widget.TextView;
@@ -21,7 +17,7 @@ import java.util.List;
 public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerViewHolder> {
 
     private final LayoutInflater mInflater;
-    private List<Player> mPlayers;
+    protected List<Player> mPlayers;
     private OnItemClickListener mClickListener;
     private OnCheckedChangeListener mCheckedListener;
 
@@ -41,26 +37,25 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
         mCheckedListener = checkedListener;
     }
 
-    static class PlayerViewHolder extends RecyclerView.ViewHolder {
+    class PlayerViewHolder extends RecyclerView.ViewHolder {
         private final Switch activeSwitch;
         private final TextView nameTextView;
-        private final ImageView deleteImage;
         private String LOG_TAG = PlayerViewHolder.class.getSimpleName();
 
         private PlayerViewHolder(View itemView,
                                  final OnItemClickListener clickListener,
-                                 final OnCheckedChangeListener checkedListener,
-                                 List<Player> players) {
+                                 final OnCheckedChangeListener checkedListener) {
             super(itemView);
             activeSwitch = itemView.findViewById(R.id.activeSwitch);
             nameTextView = itemView.findViewById(R.id.nameTextView);
-            deleteImage = itemView.findViewById(R.id.deleteImage);
+            ImageView deleteImage = itemView.findViewById(R.id.deleteImage);
 
             activeSwitch.setOnCheckedChangeListener((buttonView, isChecked) -> {
                 if (checkedListener != null) {
                     int position = PlayerViewHolder.this.getAdapterPosition();
+                    Log.e(LOG_TAG, "Button is pressed to change player " + position + "(" + mPlayers.get(position) + ") active state.");
                     if (position != RecyclerView.NO_POSITION) {
-                        Player player = players.get(position);
+                        Player player = mPlayers.get(position);
                         checkedListener.onCheckedChange(player.getName(), isChecked);
                     }
                 }
@@ -69,11 +64,9 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
             deleteImage.setOnClickListener(v -> {
                 if (clickListener != null) {
                     int position = getAdapterPosition();
-                    Log.e(LOG_TAG, "Button is pressed to delete player " + position + ".");
+                    Log.e(LOG_TAG, "Button is pressed to delete player " + position + "(" + mPlayers.get(position) + ").");
                     if (position != RecyclerView.NO_POSITION)
-                        Log.e(LOG_TAG, "Start trying to delete player " + position + ".");
-                        clickListener.onDeleteClick(players.get(position));
-                    Log.e(LOG_TAG, "Start trying to delete player " + position + ".");
+                        clickListener.onDeleteClick(mPlayers.get(position));
                 }
             });
         }
@@ -88,7 +81,7 @@ public class PlayerAdapter extends RecyclerView.Adapter<PlayerAdapter.PlayerView
     @Override
     public PlayerViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
         View itemView = mInflater.inflate(R.layout.player_item, parent, false);
-        return new PlayerViewHolder(itemView, mClickListener, mCheckedListener, mPlayers);
+        return new PlayerViewHolder(itemView, mClickListener, mCheckedListener);
     }
 
     @Override

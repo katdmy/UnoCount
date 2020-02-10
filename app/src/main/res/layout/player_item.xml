@@ -14,8 +14,8 @@
 
     <ImageView
         android:id="@+id/deleteImage"
-        android:layout_width="35dp"
-        android:layout_height="35dp"
+        android:layout_width="30dp"
+        android:layout_height="30dp"
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
         android:src="@drawable/ic_delete" />
@@ -24,7 +24,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_weight="1"
-        android:layout_margin="8dp"
+        android:layout_margin="6dp"
         android:layout_centerVertical="true"
         android:layout_toRightOf="@id/activeSwitch"
         android:layout_toLeftOf="@id/deleteImage"

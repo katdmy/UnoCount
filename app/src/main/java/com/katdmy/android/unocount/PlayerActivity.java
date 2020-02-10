@@ -8,12 +8,10 @@ import com.google.android.material.floatingactionbutton.FloatingActionButton;
 
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.lifecycle.ViewModel;
 import androidx.lifecycle.ViewModelProvider;
 import androidx.recyclerview.widget.DividerItemDecoration;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
-import androidx.room.util.StringUtil;
 
 import android.text.InputType;
 import android.util.Log;
@@ -39,7 +37,14 @@ public class PlayerActivity extends AppCompatActivity {
         setButtons();
 
         mPlayerViewModel = new ViewModelProvider(this).get(PlayerViewModel.class);
-        mPlayerViewModel.getPlayers().observe(this, (players) -> mAdapter.setPlayers(players));
+        mPlayerViewModel.getPlayers().observe(this, (players) -> {
+            mAdapter.setPlayers(players);
+            String playersString = "";
+            for (Player player : players) {
+                playersString = playersString + player.getName() + ": " + player + "\n";
+            }
+            Log.e(LOG_TAG, "Got change in players, update adapter:\n" + playersString);
+        });
         mPlayerViewModel.getActivePlayers().observe(this, (activePlayers) -> {
             mActivePlayers = (ArrayList<String>) activePlayers;
             if (mActivePlayers.size() == 0) {
@@ -65,8 +70,10 @@ public class PlayerActivity extends AppCompatActivity {
                     mPlayerViewModel.deletePlayer(player);
                     Log.e(LOG_TAG, "Command to delete player (" + player.getName() + ") sent to ViewModel.");
                 }));
-        mAdapter.setOnCheckedChangeListener((player, isChecked) ->
-                AsyncTask.execute(() -> mPlayerViewModel.setActive(player, isChecked)));
+        mAdapter.setOnCheckedChangeListener((playerName, isChecked) -> {
+            AsyncTask.execute(() -> mPlayerViewModel.setActive(playerName, isChecked));
+            Log.e(LOG_TAG, "Command to set player (" + playerName + ") " + (isChecked ? "" : "in") + "active sent to ViewModel.");
+        });
     }
 
     void setButtons() {

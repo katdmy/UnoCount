@@ -31,8 +31,8 @@ public class PlayerViewModel extends AndroidViewModel {
         return mActivePlayers;
     }
 
-    void setActive(String name, boolean active) {
-        mPlayerRepository.setActive(name, active);
+    void setActive(String playerName, boolean active) {
+        mPlayerRepository.setActive(playerName, active);
     }
 
     void insertPlayer(Player player) {
