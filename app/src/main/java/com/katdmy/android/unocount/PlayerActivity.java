@@ -4,19 +4,14 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 
-import com.google.android.material.floatingactionbutton.FloatingActionButton;
-
 import androidx.appcompat.app.AlertDialog;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.lifecycle.ViewModelProvider;
-import androidx.recyclerview.widget.DividerItemDecoration;
-import androidx.recyclerview.widget.LinearLayoutManager;
-import androidx.recyclerview.widget.RecyclerView;
 
 import android.text.InputType;
-import android.util.Log;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 
@@ -26,7 +21,6 @@ public class PlayerActivity extends AppCompatActivity {
     private PlayerAdapter mAdapter;
     private ArrayList<String> mActivePlayers;
     private Button mButtonNew;
-    private String LOG_TAG = PlayerActivity.class.getSimpleName();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,14 +31,7 @@ public class PlayerActivity extends AppCompatActivity {
         setButtons();
 
         mPlayerViewModel = new ViewModelProvider(this).get(PlayerViewModel.class);
-        mPlayerViewModel.getPlayers().observe(this, (players) -> {
-            mAdapter.setPlayers(players);
-            String playersString = "";
-            for (Player player : players) {
-                playersString = playersString + player.getName() + ": " + player + "\n";
-            }
-            Log.e(LOG_TAG, "Got change in players, update adapter:\n" + playersString);
-        });
+        mPlayerViewModel.getPlayers().observe(this, (players) -> mAdapter.setPlayers(players));
         mPlayerViewModel.getActivePlayers().observe(this, (activePlayers) -> {
             mActivePlayers = (ArrayList<String>) activePlayers;
             if (mActivePlayers.size() == 0) {
@@ -56,29 +43,24 @@ public class PlayerActivity extends AppCompatActivity {
     }
 
     void setRecyclerView() {
-        RecyclerView recyclerView = findViewById(R.id.recyclerview);
+        ListView listView = findViewById(R.id.listView);
         mAdapter = new PlayerAdapter(this);
-        recyclerView.setAdapter(mAdapter);
-        recyclerView.setLayoutManager(new LinearLayoutManager(this));
+        listView.setAdapter(mAdapter);
+        //listView.setLayoutManager(new LinearLayoutManager(this));
 
-        RecyclerView.ItemDecoration itemDecoration = new
-                DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        recyclerView.addItemDecoration(itemDecoration);
+        //RecyclerView.ItemDecoration itemDecoration = new
+        //        DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
+        //listView.addItemDecoration(itemDecoration);
 
         mAdapter.setOnItemClickListener(player ->
-                AsyncTask.execute(() -> {
-                    mPlayerViewModel.deletePlayer(player);
-                    Log.e(LOG_TAG, "Command to delete player (" + player.getName() + ") sent to ViewModel.");
-                }));
-        mAdapter.setOnCheckedChangeListener((playerName, isChecked) -> {
-            AsyncTask.execute(() -> mPlayerViewModel.setActive(playerName, isChecked));
-            Log.e(LOG_TAG, "Command to set player (" + playerName + ") " + (isChecked ? "" : "in") + "active sent to ViewModel.");
-        });
+                AsyncTask.execute(() -> mPlayerViewModel.deletePlayer(player)));
+        mAdapter.setOnCheckedChangeListener((playerName, isChecked) ->
+                AsyncTask.execute(() -> mPlayerViewModel.setActive(playerName, isChecked)));
     }
 
     void setButtons() {
-        FloatingActionButton fab = findViewById(R.id.fab);
-        fab.setOnClickListener((view) -> {
+        Button buttonAdd = findViewById(R.id.buttonAdd);
+        buttonAdd.setOnClickListener((view) -> {
             AlertDialog.Builder builder = new AlertDialog.Builder(this);
             builder.setTitle("Введите имя нового игрока");
             final EditText input = new EditText(this);
