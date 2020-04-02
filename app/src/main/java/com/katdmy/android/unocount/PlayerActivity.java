@@ -46,11 +46,6 @@ public class PlayerActivity extends AppCompatActivity {
         ListView listView = findViewById(R.id.listView);
         mAdapter = new PlayerAdapter(this);
         listView.setAdapter(mAdapter);
-        //listView.setLayoutManager(new LinearLayoutManager(this));
-
-        //RecyclerView.ItemDecoration itemDecoration = new
-        //        DividerItemDecoration(this, DividerItemDecoration.VERTICAL);
-        //listView.addItemDecoration(itemDecoration);
 
         mAdapter.setOnItemClickListener(player ->
                 AsyncTask.execute(() -> mPlayerViewModel.deletePlayer(player)));
