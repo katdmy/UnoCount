@@ -4,5 +4,6 @@
     <string name="roundHeaderText">Раунд</string>
     <string name="Total">Итог:</string>
     <string name="newRoundAddHint">Добавить результаты раунда</string>
-    <string name="buttonAddPlayer">Добавить игрока</string>
+    <string name="buttonAddPlayer">Добавить</string>
+    <string name="PlayerTitle">Игроки</string>
 </resources>

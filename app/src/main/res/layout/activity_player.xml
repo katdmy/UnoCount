@@ -6,35 +6,35 @@
     android:layout_height="match_parent"
     tools:context=".PlayerActivity">
 
-    <Button
+    <com.google.android.material.button.MaterialButton
         android:id="@+id/buttonAdd"
+        style="@style/Widget.UnoCount.Button.OutlinedButton.Icon"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="@dimen/fab_margin"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toLeftOf="parent"
-        app:layout_constraintRight_toLeftOf="@id/buttonNew"
-        android:text="@string/buttonAddPlayer" />
-
-    <Button
-        android:id="@+id/buttonNew"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_margin="@dimen/fab_margin"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintLeft_toRightOf="@id/buttonAdd"
-        app:layout_constraintRight_toRightOf="parent"
-        android:text="@string/newGameButton" />
+        android:text="@string/buttonAddPlayer"
+        app:icon="@drawable/ic_add_24dp"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintLeft_toLeftOf="parent" />
 
     <ListView
         android:id="@+id/listView"
         android:layout_width="0dp"
         android:layout_height="0dp"
         android:layout_margin="@dimen/fab_margin"
+        app:layout_constraintTop_toBottomOf="@id/buttonAdd"
         app:layout_constraintBottom_toTopOf="@id/buttonNew"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
         tools:listitem="@layout/score_item" />
 
+    <com.google.android.material.button.MaterialButton
+        android:id="@+id/buttonNew"
+        style="@style/Widget.UnoCount.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="@dimen/fab_margin"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintRight_toRightOf="parent"
+        android:text="@string/newGameButton" />
 </androidx.constraintlayout.widget.ConstraintLayout>

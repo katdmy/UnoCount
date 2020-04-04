@@ -1,5 +1,6 @@
 package com.katdmy.android.unocount;
 
+import android.app.ActionBar;
 import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -26,6 +27,7 @@ public class PlayerActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_player);
+        setTitle(getString(R.string.PlayerTitle));
 
         setRecyclerView();
         setButtons();
