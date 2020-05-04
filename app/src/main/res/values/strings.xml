@@ -1,9 +1,9 @@
 <resources>
-    <string name="app_name">UnoCount</string>
-    <string name="newGameButton">Начать новую игру</string>
-    <string name="roundHeaderText">Раунд</string>
-    <string name="Total">Итог:</string>
-    <string name="newRoundAddHint">Добавить результаты раунда</string>
-    <string name="buttonAddPlayer">Добавить</string>
-    <string name="PlayerTitle">Игроки</string>
+    <string name="app_name" translatable="false">UnoCount</string>
+    <string name="newGameButton">Start new game</string>
+    <string name="roundHeaderText">Round</string>
+    <string name="Total">Total:</string>
+    <string name="newRoundAddHint">Add round results</string>
+    <string name="buttonAddPlayer">Add</string>
+    <string name="PlayerTitle">Players</string>
 </resources>

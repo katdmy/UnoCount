@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="newGameButton">Начать новую игру</string>
+    <string name="roundHeaderText">Раунд</string>
+    <string name="Total">Итог:</string>
+    <string name="newRoundAddHint">Добавить результаты раунда</string>
+    <string name="buttonAddPlayer">Добавить</string>
+    <string name="PlayerTitle">Игроки</string>
+</resources>
