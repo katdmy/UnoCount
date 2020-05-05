@@ -33,13 +33,16 @@
         app:layout_constraintRight_toRightOf="parent">
 
         <TextView
+            android:id="@+id/totalRoundTextView"
             android:layout_width="0dp"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:layout_weight="2"
+            android:text="@string/Total"
             android:textAlignment="center"
             android:textStyle="bold"
-            android:text="@string/Total"
-            android:id="@+id/totalRoundTextView" />
+            app:autoSizeMaxTextSize="14sp"
+            app:autoSizeMinTextSize="8sp"
+            app:autoSizeTextType="uniform" />
     </LinearLayout>
 
     <LinearLayout
