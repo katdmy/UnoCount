@@ -6,4 +6,5 @@
     <string name="newRoundAddHint">Add round results</string>
     <string name="buttonAddPlayer">Add</string>
     <string name="PlayerTitle">Players</string>
+    <string name="continueGameButton">Continue game</string>
 </resources>

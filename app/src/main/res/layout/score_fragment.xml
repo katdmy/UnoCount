@@ -14,7 +14,7 @@
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent">
 
-        <com.katdmy.android.unocount.VerticalTextView
+        <com.katdmy.android.unocount.ui.widget.VerticalTextView
             android:layout_width="0dp"
             android:layout_height="match_parent"
             android:layout_weight="2"
@@ -59,7 +59,7 @@
             android:layout_height="wrap_content"
             android:layout_weight="2"
             android:src="@android:drawable/ic_menu_add"
-            android:tint="@color/colorPrimaryDark"
+            app:tint="@color/colorPrimaryDark"
             android:id="@+id/newRoundButton"
             android:contentDescription="@string/newRoundAddHint" />
     </LinearLayout>

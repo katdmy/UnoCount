@@ -5,30 +5,30 @@
     android:layout_height="wrap_content"
     android:layout_margin="8dp">
 
-    <Switch
+    <com.google.android.material.switchmaterial.SwitchMaterial
         android:id="@+id/activeSwitch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_centerVertical="true"
-        android:layout_alignParentLeft="true" />
+        android:layout_alignParentStart="true" />
 
     <ImageView
         android:id="@+id/deleteImage"
         android:layout_width="30dp"
         android:layout_height="30dp"
         android:layout_centerVertical="true"
-        android:layout_alignParentRight="true"
+        android:layout_alignParentEnd="true"
         android:src="@drawable/ic_delete" />
+
     <TextView
         android:id="@+id/nameTextView"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_weight="1"
         android:layout_margin="6dp"
         android:layout_centerVertical="true"
-        android:layout_toRightOf="@id/activeSwitch"
-        android:layout_toLeftOf="@id/deleteImage"
+        android:layout_toStartOf="@id/deleteImage"
+        android:layout_toEndOf="@id/activeSwitch"
         android:fontFamily="sans-serif-medium"
-        android:textSize="20dp" />
+        android:textSize="20sp" />
 
 </RelativeLayout>

@@ -6,4 +6,5 @@
     <string name="newRoundAddHint">Добавить результаты раунда</string>
     <string name="buttonAddPlayer">Добавить</string>
     <string name="PlayerTitle">Игроки</string>
+    <string name="continueGameButton">Продолжить</string>
 </resources>
