@@ -5,7 +5,7 @@ import com.katdmy.android.unocount.domain.score.model.Score
 
 interface ScoreRepository {
     val score: LiveData<List<Score>>
-    val players: LiveData<String>
+    val players: LiveData<Array<String>>
 
     fun insertPlayers(playersList: Array<String>)
     fun insertScore(currentScore: List<Int>)

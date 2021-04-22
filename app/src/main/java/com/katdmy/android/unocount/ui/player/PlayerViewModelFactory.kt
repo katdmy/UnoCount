@@ -12,7 +12,13 @@ class PlayerViewModelFactory(
         private val activity: FragmentActivity,
         defaultArgs: Bundle? = null
 ) : AbstractSavedStateViewModelFactory(activity, defaultArgs) {
-    override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T = when (modelClass) {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel?> create(
+            key: String,
+            modelClass: Class<T>,
+            handle: SavedStateHandle
+    ): T = when (modelClass) {
         PlayerViewModel::class.java -> {
             PlayerViewModel(
                     PlayerRepositoryImpl(

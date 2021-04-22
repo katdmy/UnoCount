@@ -1,7 +1,7 @@
 package com.katdmy.android.unocount.data.repositories.score
 
-import android.text.TextUtils.split
 import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.Transformations
 import com.katdmy.android.unocount.data.db.ScoreDao
 import com.katdmy.android.unocount.domain.score.ScoreRepository
@@ -20,8 +20,8 @@ internal class ScoreRepositoryImpl(
     override val score: LiveData<List<Score>>
         get() = scoreDao.score
 
-    override val players: LiveData<String>
-        get() = scoreDao.players
+    override val players: LiveData<Array<String>>
+        get() = Transformations.switchMap(scoreDao.players) { loadedPlayers -> MutableLiveData(loadedPlayers.split(",").toTypedArray()) }
 
 
     override fun insertPlayers(playersList: Array<String>) {

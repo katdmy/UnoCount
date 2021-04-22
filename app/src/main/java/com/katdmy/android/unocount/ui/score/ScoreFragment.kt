@@ -6,20 +6,22 @@ import android.text.InputType
 import android.text.TextUtils
 import android.view.View
 import android.widget.*
+import android.widget.LinearLayout
 import androidx.fragment.app.Fragment
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.katdmy.android.unocount.R
 import com.katdmy.android.unocount.domain.score.model.Score
 import com.katdmy.android.unocount.ui.widget.VerticalTextView
 import kotlinx.coroutines.*
-import java.util.*
+import kotlin.collections.ArrayList
+
 
 class ScoreFragment : Fragment(R.layout.score_fragment) {
 
     private val scope = CoroutineScope(Dispatchers.IO)
-    private val scoreViewModel: ScoreViewModel by viewModels { ScoreViewModelFactory(requireActivity()) }
+    private val scoreViewModel: ScoreViewModel by activityViewModels { ScoreViewModelFactory(requireActivity()) }
     private var scoreAdapter: ScoreAdapter? = null
     private var players: Array<String> = emptyArray()
     private var recyclerView: RecyclerView? = null
@@ -42,32 +44,48 @@ class ScoreFragment : Fragment(R.layout.score_fragment) {
                 }
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-
+    override fun onResume() {
+        super.onResume()
         val newGame = arguments?.getBoolean(NEW_GAME, true) ?: false
         if (newGame) {
             players = arguments?.getStringArray(PLAYERS_LIST) ?: emptyArray()
             scoreViewModel.deleteScore()
             scoreViewModel.insertPlayers(players)
-        } else
-            scoreViewModel.players.observe(viewLifecycleOwner, { loadedPlayers: String ->
-                players = loadedPlayers.split(",").toTypedArray()
-            })
 
-        initViews()
-        setRecyclerView()
-        createPlayerViews()
-        setButtons()
+            clearPlayerViews()
+            initViews()
+            setRecyclerView()
+            createPlayerViews()
+            setButtons()
+            setTotal()
+        } else
+            scoreViewModel.players.observe(viewLifecycleOwner, { loadedPlayers ->
+                players = loadedPlayers
+                clearPlayerViews()
+                initViews()
+                setRecyclerView()
+                createPlayerViews()
+                setButtons()
+                setTotal()
+            })
     }
 
-    override fun onDestroyView() {
+    override fun onPause() {
+        clearPlayerViews()
         recyclerView = null
         newRoundButton = null
         newRoundParent = null
         headerParent = null
         totalParent = null
-        super.onDestroyView()
+        super.onPause()
+    }
+
+    private fun clearPlayerViews() {
+        for (i in players.indices) {
+            newRoundParent?.removeView(newRoundParent?.findViewWithTag<EditText>("newRound$i"))
+            headerParent?.removeView(headerParent?.findViewWithTag<VerticalTextView>("header$i"))
+            totalParent?.removeView(totalParent?.findViewWithTag<TextView>("total$i"))
+        }
     }
 
     private fun initViews() {
@@ -85,23 +103,33 @@ class ScoreFragment : Fragment(R.layout.score_fragment) {
         scoreViewModel.score.observe(viewLifecycleOwner, { score: List<Score> -> scoreAdapter!!.setScore(score) })
     }
 
+    private fun setTotal() {
+        scoreViewModel.totalScore.observe(viewLifecycleOwner, { totalScore: IntArray ->
+            for (i in totalScore.indices) {
+                val totalParent: LinearLayout? = view?.findViewById(R.id.totalLayout)
+                val totalTextView = totalParent?.findViewWithTag<TextView>("total$i")
+                totalTextView?.text = totalScore[i].toString()
+            }
+        })
+    }
+
     private fun setButtons() {
         newRoundButton?.setOnClickListener {
             val currentScore: MutableList<Int> = ArrayList()
 
             for (i in players.indices) {
-                val currentTextView = newRoundParent?.findViewWithTag<TextView>("newRound$i")
-                if (TextUtils.isEmpty(currentTextView?.text)) {
+                val currentEditText = newRoundParent?.findViewWithTag<TextView>("newRound$i")
+                if (TextUtils.isEmpty(currentEditText?.text)) {
                     currentScore.add(0)
                 } else {
-                    val currentPlayerScore = currentTextView?.text.toString().toInt()
+                    val currentPlayerScore = currentEditText?.text.toString().toInt()
                     currentScore.add(currentPlayerScore)
                 }
             }
             scope.launch { scoreViewModel.insertScore(currentScore) }
             for (i in players.indices) {
-                val currentTextView = newRoundParent?.findViewWithTag<TextView>("newRound$i")
-                currentTextView?.text = ""
+                val currentEditText = newRoundParent?.findViewWithTag<EditText>("newRound$i")
+                currentEditText?.text?.clear()
             }
             val current1TextView = newRoundParent?.findViewWithTag<TextView>("newRound0")
             current1TextView?.isFocusableInTouchMode = true
@@ -115,7 +143,7 @@ class ScoreFragment : Fragment(R.layout.score_fragment) {
             val playerTextView = VerticalTextView(requireContext(), null)
             playerTextView.text = name
             playerTextView.tag = "header$i"
-            playerTextView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL))
+            playerTextView.typeface = Typeface.create("sans-serif-black", Typeface.NORMAL)
             headerParent?.addView(playerTextView)
             val loParams = playerTextView.layoutParams as LinearLayout.LayoutParams
             loParams.width = 0
@@ -125,7 +153,7 @@ class ScoreFragment : Fragment(R.layout.score_fragment) {
         }
         for (i in players.indices) {
             val totalTextView = TextView(requireContext())
-            totalTextView.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL))
+            totalTextView.typeface = Typeface.create("sans-serif-black", Typeface.NORMAL)
             totalTextView.textAlignment = View.TEXT_ALIGNMENT_CENTER
             totalTextView.tag = "total$i"
             totalParent?.addView(totalTextView)
@@ -137,7 +165,7 @@ class ScoreFragment : Fragment(R.layout.score_fragment) {
         }
         for (i in players.indices) {
             val newRoundEditText = EditText(requireContext())
-            newRoundEditText.setTypeface(Typeface.create("sans-serif-black", Typeface.NORMAL))
+            newRoundEditText.typeface = Typeface.create("sans-serif-black", Typeface.NORMAL)
             newRoundEditText.inputType = InputType.TYPE_CLASS_NUMBER
             newRoundEditText.textAlignment = View.TEXT_ALIGNMENT_CENTER
             newRoundEditText.tag = "newRound$i"

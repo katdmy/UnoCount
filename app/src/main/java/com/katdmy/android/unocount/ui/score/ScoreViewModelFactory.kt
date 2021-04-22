@@ -12,12 +12,19 @@ class ScoreViewModelFactory(
         private val activity: FragmentActivity,
         defaultArgs: Bundle? = null
 ) : AbstractSavedStateViewModelFactory(activity, defaultArgs) {
-    override fun <T : ViewModel?> create(key: String, modelClass: Class<T>, handle: SavedStateHandle): T = when (modelClass) {
+
+    @Suppress("UNCHECKED_CAST")
+    override fun <T : ViewModel?> create(
+            key: String,
+            modelClass: Class<T>,
+            handle: SavedStateHandle
+    ): T = when (modelClass) {
         ScoreViewModel::class.java -> {
             ScoreViewModel(
                     ScoreRepositoryImpl(
                             (activity.application as UnoCountApplication).db.scoreDao,
-                    ))
+                    )
+            )
         }
         else -> throw IllegalArgumentException("$modelClass is not registered ViewModel")
     } as T
